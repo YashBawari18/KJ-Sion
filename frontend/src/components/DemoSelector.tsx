@@ -109,7 +109,7 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {YT_DEMOS.map((card) => {
           const RightIcon = card.BadgeIcon;
-          const thumbUrl = `https://i.ytimg.com/vi/${card.videoId}/hqdefault.jpg`;
+          const thumbUrl = `/api/yt-thumb?v=${card.videoId}`;
 
           return (
             <div

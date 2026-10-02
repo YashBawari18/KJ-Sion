@@ -29,7 +29,7 @@ interface SlotState {
 const emptySlot = (): SlotState => ({ mode: 'youtube', file: null, youtubeUrl: '', previewThumb: null });
 
 function ytThumb(videoId: string) {
-  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  return `/api/yt-thumb?v=${videoId}`;
 }
 
 function extractVideoId(url: string): string | null {

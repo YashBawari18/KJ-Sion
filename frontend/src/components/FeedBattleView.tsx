@@ -33,9 +33,9 @@ interface CompetitorVideo {
   gazeOrder: number;
 }
 
-// Real YouTube CDN thumbnail helper — uses hqdefault as universal fallback
+// Proxy YouTube thumbnails through our own API to bypass CDN CORS/hotlink restrictions
 function ytThumb(videoId: string) {
-  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  return `/api/yt-thumb?v=${videoId}`;
 }
 
 export function FeedBattleView({
