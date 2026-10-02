@@ -9,6 +9,7 @@ import { AnalysisDashboard } from '@/components/AnalysisDashboard';
 import { StandaloneCompareView } from '@/components/StandaloneCompareView';
 import { FeedBattleView } from '@/components/FeedBattleView';
 import { GuideView } from '@/components/GuideView';
+import { ThumbnailCreator } from '@/components/ThumbnailCreator';
 import { DisclaimerBanner } from '@/components/DisclaimerBanner';
 import { checkBackendHealth, uploadAndAnalyze, analyzeYouTubeUrl, requestExplanation } from '@/lib/api';
 import { AnalysisResponse, ExplainResponse } from '@/types/analysis';
@@ -234,6 +235,15 @@ export default function Home() {
               userScore={analysisResult?.attention_score || 82}
               onAnalyzeNew={() => setCurrentPage('analyze')}
             />
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* PAGE: THUMBNAIL CREATOR                                   */}
+        {/* ======================================================== */}
+        {currentPage === 'creator' && (
+          <div className="animate-fade-in">
+            <ThumbnailCreator onAnalyzeThumbnail={handleFileSelect} />
           </div>
         )}
 

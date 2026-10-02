@@ -18,6 +18,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Thumbnail IQ — AI-Powered YouTube Thumbnail Attention Heatmap",
   description: "Understand visual attention before you publish. Predict viewer fixation hotspots, scan paths, and design scores with multi-signal computer vision.",
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

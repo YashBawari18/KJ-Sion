@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { BarChart3, Flame, Type, Smartphone, ArrowRight, Loader2, PlayCircle } from 'lucide-react';
 
 interface DemoSelectorProps {
-  onSelectYouTube: (youtubeUrl: string) => void;
+  onSelectYouTube: (youtubeUrl: string) => Promise<void> | void;
   isLoading: boolean;
 }
 
@@ -82,6 +82,18 @@ const YT_DEMOS = [
 ];
 
 export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) {
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  const handleInspect = async (card: typeof YT_DEMOS[number]) => {
+    if (isLoading || loadingId) return;
+    setLoadingId(card.id);
+    try {
+      await onSelectYouTube(card.youtubeUrl);
+    } finally {
+      setLoadingId(null);
+    }
+  };
+
   return (
     <section className="w-full mt-4 sm:mt-8 pb-10">
       {/* Header */}
@@ -111,12 +123,30 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
           const RightIcon = card.BadgeIcon;
           const thumbUrl = `/api/yt-thumb?v=${card.videoId}`;
 
+          const isThisLoading = loadingId === card.id;
+
           return (
             <div
               key={card.id}
-              onClick={() => !isLoading && onSelectYouTube(card.youtubeUrl)}
-              className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col justify-between"
+              className={`relative rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 shadow-sm transition-all duration-300 flex flex-col justify-between
+                ${
+                  isThisLoading
+                    ? 'shadow-purple-200 dark:shadow-purple-900 border-purple-300 dark:border-purple-700'
+                    : !isLoading && !loadingId
+                    ? 'hover:shadow-xl hover:-translate-y-1 cursor-pointer'
+                    : 'opacity-60 cursor-not-allowed'
+                }`}
             >
+              {/* Per-card loading overlay */}
+              {isThisLoading && (
+                <div className="absolute inset-0 z-10 rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-full border-4 border-purple-200 dark:border-purple-900" />
+                    <div className="absolute inset-0 w-12 h-12 rounded-full border-4 border-t-purple-600 dark:border-t-purple-400 animate-spin" />
+                  </div>
+                  <p className="text-xs font-bold text-purple-700 dark:text-purple-300 tracking-wide animate-pulse">Analyzing…</p>
+                </div>
+              )}
               <div>
                 {/* Pill Badges */}
                 <div className="flex items-center justify-between mb-3.5">
@@ -192,11 +222,20 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
 
                 <button
                   type="button"
-                  disabled={isLoading}
-                  className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-200 font-bold text-xs shadow-2xs transition-transform hover:translate-x-0.5 cursor-pointer disabled:opacity-50"
+                  disabled={!!isLoading || !!loadingId}
+                  onClick={(e) => { e.stopPropagation(); handleInspect(card); }}
+                  className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border font-bold text-xs shadow-2xs transition-all duration-200 cursor-pointer
+                    ${
+                      isThisLoading
+                        ? 'border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300'
+                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-200 hover:translate-x-0.5 disabled:opacity-50'
+                    }`}
                 >
-                  {isLoading ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  {isThisLoading ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Loading…</span>
+                    </>
                   ) : (
                     <>
                       <span>Inspect</span>
