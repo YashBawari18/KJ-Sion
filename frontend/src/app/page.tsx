@@ -201,12 +201,12 @@ export default function Home() {
           <div className="flex items-center space-x-2">
             <span className="font-bold text-slate-800 dark:text-slate-200">Thumbnail IQ</span>
             <span>·</span>
-            <span>PS 2: AI-Powered YouTube Thumbnail Attention Heatmap</span>
+            <span>AI-Powered YouTube Thumbnail Attention Intelligence</span>
           </div>
 
           <div className="flex items-center space-x-4">
             <span className="text-slate-400 dark:text-slate-500">
-              {t.disclaimerShort}
+              © {new Date().getFullYear()} Thumbnail IQ. All rights reserved.
             </span>
           </div>
         </div>
