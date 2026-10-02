@@ -116,7 +116,7 @@ export default function Home() {
       />
 
       {/* Main Page Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         {/* Backend offline warning banner */}
         {backendHealthy === false && (
           <div className="mb-6 p-4 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 flex items-start space-x-3 text-xs sm:text-sm shadow-xs backdrop-blur-xs animate-fade-in">
@@ -144,22 +144,22 @@ export default function Home() {
         )}
 
         {/* ======================================================== */}
-        {/* PAGE 1: ANALYZE / HOME                                   */}
+        {/* PAGE 1: ANALYZE / HOME (Matching Mockup Image 1)         */}
         {/* ======================================================== */}
         {currentPage === 'analyze' && (
-          <div className="space-y-8 animate-fade-in">
-            {/* If user already has an active analysis, show a quick jump banner */}
+          <div className="space-y-6 sm:space-y-8 animate-fade-in">
+            {/* If user already has an active analysis, show quick jump banner */}
             {analysisResult && (
-              <div className="p-4 rounded-2xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800 flex items-center justify-between shadow-xs">
+              <div className="p-3.5 px-4 rounded-2xl bg-purple-50/90 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-800 flex items-center justify-between shadow-xs">
                 <div className="flex items-center space-x-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100">
-                    Active analysis ready for: {analysisResult.image_metadata.filename} ({analysisResult.attention_score}/100)
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate max-w-sm sm:max-w-md">
+                    Active analysis: {analysisResult.image_metadata.filename} ({analysisResult.attention_score}/100)
                   </span>
                 </div>
                 <button
                   onClick={() => setCurrentPage('results')}
-                  className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-xs cursor-pointer"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-xs cursor-pointer shrink-0"
                 >
                   <span>View Results</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -167,39 +167,31 @@ export default function Home() {
               </div>
             )}
 
+            {/* Unified 2-Column Hero with Embedded Dropzone & Showcase Card */}
             <Hero
-              onScrollToUpload={scrollToDropzone}
-              onExploreDemo={() => setCurrentPage('demo')}
+              onFileSelect={handleFileSelect}
+              isAnalyzing={isAnalyzing}
+              onExploreDemo={() => {
+                const el = document.getElementById('demo-thumbnails-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                else setCurrentPage('demo');
+              }}
+              error={error}
+              onClearError={() => setError(null)}
             />
 
-            <div className="pt-2">
-              <UploadDropzone
-                onFileSelect={handleFileSelect}
-                isAnalyzing={isAnalyzing}
-                error={error}
-                onClearError={() => setError(null)}
+            {/* Try Demo Thumbnails (Comparative Attention Audits) */}
+            <div id="demo-thumbnails-section">
+              <DemoSelector
+                onSelectSample={handleSelectSample}
+                isLoading={isAnalyzing}
               />
             </div>
-
-            {/* Quick Demo Link */}
-            <div className="text-center pt-2">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Don't have a thumbnail ready?{' '}
-                <button
-                  onClick={() => setCurrentPage('demo')}
-                  className="font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-700 underline underline-offset-2 transition-colors cursor-pointer"
-                >
-                  Try our 3 viral demo samples →
-                </button>
-              </p>
-            </div>
-
-            <DisclaimerBanner />
           </div>
         )}
 
         {/* ======================================================== */}
-        {/* PAGE 2: RESULTS DASHBOARD                                */}
+        {/* PAGE 2: RESULTS DASHBOARD (Matching Mockup Image 2)      */}
         {/* ======================================================== */}
         {currentPage === 'results' && analysisResult && (
           <AnalysisDashboard
@@ -208,6 +200,7 @@ export default function Home() {
             explanation={explanation}
             onRequestAiExplain={handleRequestAiExplain}
             isLoadingAi={isLoadingAi}
+            onGoToCompare={() => setCurrentPage('compare')}
           />
         )}
 
@@ -220,7 +213,6 @@ export default function Home() {
               onSelectSample={handleSelectSample}
               isLoading={isAnalyzing}
             />
-            <DisclaimerBanner />
           </div>
         )}
 
@@ -230,12 +222,11 @@ export default function Home() {
         {currentPage === 'compare' && (
           <div className="space-y-8 animate-fade-in">
             <StandaloneCompareView />
-            <DisclaimerBanner />
           </div>
         )}
 
         {/* ======================================================== */}
-        {/* PAGE 5: HOW IT WORKS / GUIDE                             */}
+        {/* PAGE 5: HOW IT WORKS / GUIDE / DOCS                      */}
         {/* ======================================================== */}
         {currentPage === 'guide' && (
           <div className="space-y-8 animate-fade-in">
@@ -243,22 +234,24 @@ export default function Home() {
               onStartAnalyzing={() => setCurrentPage('analyze')}
               onExploreDemos={() => setCurrentPage('demo')}
             />
-            <DisclaimerBanner />
           </div>
         )}
       </main>
 
-      {/* Clean Professional Footer */}
+      {/* Clean Professional Footer Matching Mockup Images */}
       <footer className="border-t border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md py-6 mt-auto transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center space-x-2">
+            <div className="w-5 h-5 rounded-md bg-purple-600 flex items-center justify-center text-white shrink-0">
+              <Eye className="w-3 h-3 stroke-[2.2]" />
+            </div>
             <span className="font-bold text-slate-800 dark:text-slate-200">Thumbnail IQ</span>
-            <span>·</span>
-            <span>AI-Powered YouTube Thumbnail Attention Intelligence</span>
+            <span>—</span>
+            <span>Understand attention. Improve your thumbnail. Before you publish.</span>
           </div>
 
           <div>
-            <span>© {new Date().getFullYear()} Thumbnail IQ. All rights reserved.</span>
+            <span>© 2025 Thumbnail IQ Inc. Precision Gaze Prediction Architecture.</span>
           </div>
         </div>
       </footer>

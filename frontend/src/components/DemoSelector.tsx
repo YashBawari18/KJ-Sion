@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { User, Type, Package, Sparkles, ArrowRight, Loader2, Zap } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+import { BarChart3, Flame, Type, Smartphone, ArrowRight, Loader2 } from 'lucide-react';
 
 interface DemoSelectorProps {
   onSelectSample: (sampleId: 'face' | 'text' | 'product', imagePath: string) => void;
@@ -10,143 +9,192 @@ interface DemoSelectorProps {
 }
 
 export function DemoSelector({ onSelectSample, isLoading }: DemoSelectorProps) {
-  const { t } = useLanguage();
-
-  const samples = [
+  const cards = [
     {
       id: 'face' as const,
-      title: 'Face-Heavy Subject',
-      subtitle: 'Shocked reaction face with high-contrast neon rim lighting and emotional gaze anchor.',
-      path: '/samples/sample_face.jpg',
-      icon: User,
-      badge: 'Face Dominant',
-      focusSignal: 'YuNet Deep Learning Face DNN',
-      expectedFocus: 'Primary Fixation: Expressive Face',
-      badgeColor: 'bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800',
-      gradientGlow: 'group-hover:border-purple-500 group-hover:shadow-purple-500/20'
+      badgeLeft: 'FACE-HEAVY',
+      badgeRight: '88/100 Saliency',
+      badgeRightIcon: Flame,
+      badgeRightColor: 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/70 border-purple-200 dark:border-purple-800',
+      image: '/samples/sample_face.jpg',
+      overlayTag: 'Face Hotspot: 94%',
+      overlayTagDot: 'bg-red-500',
+      distText: 'Face 62% · Text 28% · BG 10%',
+      distSegments: [
+        { width: '62%', color: 'bg-rose-500' },
+        { width: '28%', color: 'bg-purple-600' },
+        { width: '10%', color: 'bg-slate-300 dark:bg-slate-700' },
+      ],
+      velocityMs: '110ms',
+      waveformHeights: [40, 70, 100, 85, 45],
+      waveformColor: 'bg-purple-600 dark:bg-purple-400',
+      ctrLift: '+24.3%',
     },
     {
       id: 'text' as const,
-      title: 'Text-Heavy Headline',
-      subtitle: 'Massive 3D vibrant typography ("DO NOT BUY") with strong luminance edge contrast.',
-      path: '/samples/sample_text.jpg',
-      icon: Type,
-      badge: 'Typography Dominant',
-      focusSignal: 'Stroke Width & Contrast Gradient',
-      expectedFocus: 'Primary Fixation: 3D Headline',
-      badgeColor: 'bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
-      gradientGlow: 'group-hover:border-blue-500 group-hover:shadow-blue-500/20'
+      badgeLeft: 'TEXT-HEAVY',
+      badgeRight: '81/100 Saliency',
+      badgeRightIcon: Type,
+      badgeRightColor: 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 border-indigo-200 dark:border-indigo-800',
+      image: '/samples/sample_text.jpg',
+      overlayTag: 'Headline Pop: 91%',
+      overlayTagDot: 'bg-purple-500',
+      distText: 'Text 58% · Face 31% · UI 11%',
+      distSegments: [
+        { width: '58%', color: 'bg-indigo-600' },
+        { width: '31%', color: 'bg-pink-500' },
+        { width: '11%', color: 'bg-slate-300 dark:bg-slate-700' },
+      ],
+      velocityMs: '135ms',
+      waveformHeights: [55, 90, 80, 100, 60],
+      waveformColor: 'bg-indigo-600 dark:bg-indigo-400',
+      ctrLift: '+19.1%',
     },
     {
       id: 'product' as const,
-      title: 'Product / Gear Showcase',
-      subtitle: 'Centered mirrorless camera gear on illuminated pedestal with cinematic rim haze.',
-      path: '/samples/sample_product.jpg',
-      icon: Package,
-      badge: 'Object / Lighting',
-      focusSignal: 'Specular Highlights & Central Framing',
-      expectedFocus: 'Primary Fixation: Camera & Lens',
-      badgeColor: 'bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
-      gradientGlow: 'group-hover:border-amber-500 group-hover:shadow-amber-500/20'
+      badgeLeft: 'PRODUCT-HEAVY',
+      badgeRight: '79/100 Saliency',
+      badgeRightIcon: Smartphone,
+      badgeRightColor: 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/70 border-blue-200 dark:border-blue-800',
+      image: '/samples/sample_product.jpg',
+      overlayTag: 'Device Focus: 86%',
+      overlayTagDot: 'bg-blue-500',
+      distText: 'Device 48% · Creator 42% · Text 10%',
+      distSegments: [
+        { width: '48%', color: 'bg-blue-600' },
+        { width: '42%', color: 'bg-amber-500' },
+        { width: '10%', color: 'bg-slate-300 dark:bg-slate-700' },
+      ],
+      velocityMs: '160ms',
+      waveformHeights: [65, 80, 100, 75, 50],
+      waveformColor: 'bg-blue-600 dark:bg-blue-400',
+      ctrLift: '+15.7%',
     },
   ];
 
   return (
-    <div className="w-full max-w-5xl mx-auto mt-6">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/70 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 text-xs font-semibold uppercase tracking-wider mb-2.5 shadow-xs">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Interactive Demo Gallery</span>
+    <section className="w-full mt-4 sm:mt-8 pb-10">
+      {/* Header section matching Mockup Image 1 */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-6">
+        <div>
+          <div className="flex items-center space-x-1.5 text-purple-700 dark:text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">
+            <BarChart3 className="w-4 h-4" />
+            <span>COMPARATIVE ATTENTION AUDITS</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            Try Demo Thumbnails
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Real creator samples with neural attention breakdown and fixation curves.
+          </p>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-          Test Diverse YouTube Thumbnail Archetypes
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto mt-1.5">
-          Select any sample below to run our multi-signal computer vision engine in real-time. Notice how each archetype shifts the visual attention hotspots and scanpath order.
-        </p>
+
+        {/* Real-time saliency indicator badge */}
+        <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-semibold text-slate-700 dark:text-slate-300">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Real-time saliency distribution active</span>
+        </div>
       </div>
 
+      {/* 3 Archetype Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {samples.map((sample) => {
-          const Icon = sample.icon;
+        {cards.map((card) => {
+          const RightIcon = card.badgeRightIcon;
           return (
             <div
-              key={sample.id}
-              onClick={() => !isLoading && onSelectSample(sample.id, sample.path)}
-              className={`group relative flex flex-col text-left rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 p-4 shadow-sm hover:shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 cursor-pointer ${sample.gradientGlow} ${
-                isLoading ? 'opacity-60 cursor-not-allowed' : ''
-              }`}
+              key={card.id}
+              onClick={() => !isLoading && onSelectSample(card.id, card.image)}
+              className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col justify-between"
             >
-              {/* Thumbnail Preview Area with High-Res Image */}
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 mb-3.5 border border-slate-200 dark:border-slate-800 shadow-xs">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={sample.path}
-                  alt={sample.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                
-                {/* Archetype Badge */}
-                <div className="absolute top-2.5 left-2.5">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-xs backdrop-blur-md ${sample.badgeColor}`}
-                  >
-                    {sample.badge}
+              <div>
+                {/* Top Pill Badges */}
+                <div className="flex items-center justify-between mb-3.5">
+                  <span className="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 tracking-wider">
+                    {card.badgeLeft}
+                  </span>
+                  <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border shadow-2xs ${card.badgeRightColor}`}>
+                    <RightIcon className="w-3 h-3" />
+                    <span>{card.badgeRight}</span>
                   </span>
                 </div>
 
-                {/* Duration Badge Simulation */}
-                <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/85 text-white text-[9px] font-black tracking-tight shadow-xs">
-                  12:45
+                {/* Thumbnail Image Container with Overlay Tag */}
+                <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 mb-4 border border-slate-200 dark:border-slate-800 group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={card.image}
+                    alt={card.badgeLeft}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Bottom-left overlay tag */}
+                  <div className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/10 flex items-center space-x-1.5 text-[10px] font-bold text-white shadow-sm">
+                    <span className={`w-2 h-2 rounded-full ${card.overlayTagDot}`} />
+                    <span>{card.overlayTag}</span>
+                  </div>
+                </div>
+
+                {/* Attention Distribution Section */}
+                <div className="space-y-1.5 mb-4">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span className="text-slate-500 dark:text-slate-400">Attention Distribution</span>
+                    <span className="text-slate-900 dark:text-slate-200 font-bold">{card.distText}</span>
+                  </div>
+                  {/* Stacked Multi-Segment Progress Bar */}
+                  <div className="h-2 w-full rounded-full overflow-hidden flex bg-slate-100 dark:bg-slate-800">
+                    {card.distSegments.map((seg, i) => (
+                      <div key={i} style={{ width: seg.width }} className={`h-full ${seg.color}`} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Fixation Velocity with Waveform bars */}
+                <div className="flex items-center justify-between py-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Fixation Velocity:</span>
+                  <div className="flex items-center space-x-2">
+                    {/* Simulated Equalizer Waveform Bars */}
+                    <div className="flex items-end space-x-0.5 h-4">
+                      {card.waveformHeights.map((h, i) => (
+                        <div
+                          key={i}
+                          style={{ height: `${h}%` }}
+                          className={`w-1 rounded-full ${card.waveformColor}`}
+                        />
+                      ))}
+                    </div>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">{card.velocityMs}</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Title & Icon */}
-              <div className="flex items-center space-x-2 mb-1">
-                <div className="w-6 h-6 rounded-lg bg-purple-50 dark:bg-purple-950 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                  <Icon className="w-3.5 h-3.5" />
+              {/* Bottom Footer: Predicted CTR Lift + Inspect Button */}
+              <div className="pt-3 mt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    PREDICTED CTR LIFT
+                  </p>
+                  <p className="text-base font-black text-purple-600 dark:text-purple-400 leading-tight">
+                    {card.ctrLift}
+                  </p>
                 </div>
-                <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                  {sample.title}
-                </h3>
-              </div>
 
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 leading-relaxed">
-                {sample.subtitle}
-              </p>
-
-              {/* Diagnostic Focus Highlight */}
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 mb-3.5 space-y-1">
-                <div className="flex items-center space-x-1 text-[11px] font-bold text-slate-800 dark:text-slate-200">
-                  <Zap className="w-3 h-3 text-amber-500" />
-                  <span>{sample.expectedFocus}</span>
-                </div>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500">
-                  Engine: {sample.focusSignal}
-                </p>
-              </div>
-
-              {/* Action Button */}
-              <div className="mt-auto pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-[11px] text-slate-400 dark:text-slate-500">Ready to test</span>
-                <span className="inline-flex items-center space-x-1 font-bold text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition-transform">
+                <button
+                  type="button"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs shadow-2xs transition-transform hover:translate-x-0.5 cursor-pointer"
+                >
                   {isLoading ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Analyzing...</span>
-                    </>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <>
-                      <span>Analyze Archetype</span>
+                      <span>Inspect</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}
-                </span>
+                </button>
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
