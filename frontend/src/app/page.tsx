@@ -11,6 +11,7 @@ import { FeedBattleView } from '@/components/FeedBattleView';
 import { GuideView } from '@/components/GuideView';
 import { ThumbnailCreator } from '@/components/ThumbnailCreator';
 import { DisclaimerBanner } from '@/components/DisclaimerBanner';
+import { Logo } from '@/components/Logo';
 import { checkBackendHealth, uploadAndAnalyze, analyzeYouTubeUrl, requestExplanation } from '@/lib/api';
 import { AnalysisResponse, ExplainResponse } from '@/types/analysis';
 import { useLanguage } from '@/context/LanguageContext';
@@ -281,20 +282,18 @@ export default function Home() {
         )}
       </main>
 
-      {/* Clean Professional Footer Matching Mockup Images */}
+      {/* Clean Professional Footer */}
       <footer className="border-t border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md py-6 mt-auto transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 rounded-md bg-purple-600 flex items-center justify-center text-white shrink-0">
-              <Eye className="w-3 h-3 stroke-[2.2]" />
-            </div>
-            <span className="font-bold text-slate-800 dark:text-slate-200">Thumbnail IQ</span>
-            <span>—</span>
-            <span>Understand attention. Improve your thumbnail. Before you publish.</span>
+          <div className="flex items-center space-x-2.5">
+            <Logo size="sm" showText={false} />
+            <span className="font-bold text-slate-800 dark:text-slate-200">Thumbnail<span className="text-purple-600 dark:text-purple-400">IQ</span></span>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <span>{t('heroSubtitle') || 'Understand attention. Improve your thumbnail. Before you publish.'}</span>
           </div>
 
-          <div>
-            <span>© 2025 Thumbnail IQ Inc. Precision Gaze Prediction Architecture.</span>
+          <div className="text-[11px] font-mono text-slate-400">
+            <span>© {new Date().getFullYear()} Thumbnail IQ • Neural Gaze Heatmap Architecture</span>
           </div>
         </div>
       </footer>

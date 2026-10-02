@@ -15,6 +15,8 @@ import {
   Zap
 } from 'lucide-react';
 
+import { useLanguage } from '@/context/LanguageContext';
+
 interface HeroProps {
   onFileSelect: (file: File) => void;
   onYouTubeSelect?: (url: string) => void;
@@ -32,6 +34,7 @@ export function Hero({
   error,
   onClearError,
 }: HeroProps) {
+  const { t } = useLanguage();
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<'upload' | 'youtube'>('upload');
@@ -91,16 +94,20 @@ export function Hero({
           {/* Top Tag Pill */}
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-bold text-slate-700 dark:text-slate-300">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span className="uppercase tracking-wider text-[11px]">NEURAL GAZE HEATMAP V2.4</span>
+            <span className="uppercase tracking-wider text-[11px]">{t('heroPill') || 'NEURAL GAZE HEATMAP V2.4'}</span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-black tracking-tight text-slate-900 dark:text-white leading-[1.08]">
-            Understand attention.{' '}
+            {t('heroTitlePrefix') || 'Understand attention.'}{' '}
             <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-500 bg-clip-text text-transparent">
-              Improve your thumbnail.
+              {t('heroTitleGradient') || 'Improve your thumbnail.'}
             </span>
           </h1>
+
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+            {t('heroSubtitle') || 'AI-powered predicted visual attention analysis for YouTube thumbnails. Diagnose fixation hotspots, trace viewer scan journeys, and optimize your visual hierarchy before you post.'}
+          </p>
 
           {/* 3 Metrics Stats Row */}
           <div className="grid grid-cols-3 gap-3">
@@ -234,7 +241,7 @@ export function Hero({
                       className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-purple-500/25 flex items-center space-x-1.5 transition-all hover:scale-[1.02] cursor-pointer"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
-                      <span>Analyze Thumbnail</span>
+                      <span>{t('ctaAnalyze') || 'Analyze Thumbnail'}</span>
                     </button>
 
                     <button
@@ -246,7 +253,7 @@ export function Hero({
                       className="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm shadow-xs flex items-center space-x-1.5 transition-all cursor-pointer"
                     >
                       <Play className="w-3.5 h-3.5 fill-current text-slate-600 dark:text-slate-300" />
-                      <span>Interactive Demo</span>
+                      <span>{t('ctaDemos') || 'Interactive Demo'}</span>
                     </button>
                   </div>
                 </div>
