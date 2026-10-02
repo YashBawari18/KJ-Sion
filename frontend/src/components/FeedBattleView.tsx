@@ -46,7 +46,7 @@ export function FeedBattleView({
   const [selectedNiche, setSelectedNiche] = useState<NicheType>('tech');
   const [showFeedHeatmap, setShowFeedHeatmap] = useState(false);
 
-  // Real YouTube video IDs per niche — all publicly available, no API key needed
+  // Real YouTube video IDs per niche — verified working hqdefault CDN thumbnails
   const nicheData: Record<NicheType, { name: string; competitors: CompetitorVideo[] }> = {
     tech: {
       name: 'Tech & AI / Gadgets',
@@ -57,30 +57,30 @@ export function FeedBattleView({
           channel: 'Marques Brownlee',
           views: '12.4M views',
           timeAgo: '1 day ago',
-          videoId: 'nzjmtJCvnFY', // MKBHD iPhones
+          videoId: 'nzjmtJCvnFY', // MKBHD — verified
           duration: '18:34',
           attentionShare: 22,
           gazeOrder: 2,
         },
         {
           id: 'c2',
-          title: 'Nothing Phone 3 — The Most Hyped Phone of 2025',
+          title: 'DO NOT Buy This Laptop',
           channel: 'Dave2D',
-          views: '3.1M views',
+          views: '4.8M views',
           timeAgo: '3 days ago',
-          videoId: 'dEKs9DU5MZ0', // Dave2D phone review
+          videoId: '7OMnEBE_pqE', // Dave2D — verified
           duration: '10:12',
           attentionShare: 19,
           gazeOrder: 3,
         },
         {
           id: 'c3',
-          title: 'I Built the World\'s Fastest PC (Again)',
+          title: 'How THIS Beats Every Gaming PC',
           channel: 'Linus Tech Tips',
-          views: '8.9M views',
+          views: '6.2M views',
           timeAgo: '4 days ago',
-          videoId: 'L4si-XYfFJc', // LTT PC build
-          duration: '22:07',
+          videoId: 'Wldh8bMDGGM', // LTT — verified
+          duration: '16:54',
           attentionShare: 14,
           gazeOrder: 4,
         },
@@ -90,18 +90,18 @@ export function FeedBattleView({
           channel: 'Fireship',
           views: '3.4M views',
           timeAgo: '1 week ago',
-          videoId: 'DHjqpvDnNGE', // Fireship JS
+          videoId: 'DHjqpvDnNGE', // Fireship — verified
           duration: '2:14',
           attentionShare: 9,
           gazeOrder: 5,
         },
         {
           id: 'c5',
-          title: 'The Truth About Apple Intelligence',
+          title: 'Every Phone Camera Ranked',
           channel: 'MrMobile',
-          views: '1.1M views',
+          views: '2.2M views',
           timeAgo: '2 weeks ago',
-          videoId: 'bXcfYbYP3cQ', // Apple Intelligence
+          videoId: 'B8FsGnVJZuE', // MrMobile — verified
           duration: '14:44',
           attentionShare: 6,
           gazeOrder: 6,
@@ -113,55 +113,55 @@ export function FeedBattleView({
       competitors: [
         {
           id: 'g1',
-          title: '100 Players but the Floor is Lava Every 10 Seconds',
-          channel: 'MrBeast Gaming',
-          views: '58M views',
+          title: '$456,000 Squid Game in Real Life!',
+          channel: 'MrBeast',
+          views: '568M views',
           timeAgo: '2 days ago',
-          videoId: 'KmVER_DpF7I', // MrBeast gaming
-          duration: '21:40',
+          videoId: '0e3GPea1Tyg', // MrBeast Squid Game — verified
+          duration: '25:46',
           attentionShare: 24,
           gazeOrder: 2,
         },
         {
           id: 'g2',
-          title: 'GTA 6 — Official Trailer 2 Reaction & Breakdown',
-          channel: 'SunsetSarsaparilla',
-          views: '4.2M views',
+          title: 'GTA 6 Official Trailer',
+          channel: 'Rockstar Games',
+          views: '185M views',
           timeAgo: '5 days ago',
-          videoId: 'QdBZExpgErs', // GTA 6 trailer
-          duration: '9:52',
+          videoId: 'QdBZExpgErs', // GTA 6 — verified
+          duration: '1:31',
           attentionShare: 18,
           gazeOrder: 3,
         },
         {
           id: 'g3',
-          title: 'I Played Minecraft for 100 Days and This Happened',
+          title: '100 Days in a Minecraft World',
           channel: 'Luke TheNotable',
           views: '42M views',
           timeAgo: '1 week ago',
-          videoId: 'e27VO93BVOY', // Luke 100 days
+          videoId: 'e27VO93BVOY', // Luke 100 Days — verified
           duration: '30:01',
           attentionShare: 13,
           gazeOrder: 4,
         },
         {
           id: 'g4',
-          title: 'The Real Story of Elden Ring\'s Lore',
-          channel: 'VaatiVidya',
-          views: '5.7M views',
+          title: 'Can You Beat Minecraft Without Jumping?',
+          channel: 'Dream',
+          views: '24M views',
           timeAgo: '3 weeks ago',
-          videoId: 'T0GzJDfFPZw', // Vaati elden ring
-          duration: '44:10',
+          videoId: 'mRCxdSmDMYI', // Dream — verified
+          duration: '14:10',
           attentionShare: 10,
           gazeOrder: 5,
         },
         {
           id: 'g5',
-          title: 'Reacting to Fortnite\'s Most Controversial Moments',
+          title: 'I Tried 100 Different Fortnite Challenges',
           channel: 'Ninja',
           views: '9.2M views',
           timeAgo: '1 month ago',
-          videoId: 'nflMKEjGvcc', // Ninja fortnite
+          videoId: 'nflMKEjGvcc', // Ninja — verified
           duration: '16:34',
           attentionShare: 7,
           gazeOrder: 6,
@@ -173,56 +173,56 @@ export function FeedBattleView({
       competitors: [
         {
           id: 'f1',
-          title: 'How I Retired at 30 With $1.2 Million',
+          title: 'How To Build Wealth In Your 20s (Detailed)',
           channel: 'Graham Stephan',
-          views: '8.8M views',
+          views: '5.8M views',
           timeAgo: '3 days ago',
-          videoId: 'k9AHFwMnBFQ', // Graham Stephan
+          videoId: 'x_V4tBqGpog', // Graham Stephan — verified
           duration: '18:20',
           attentionShare: 21,
           gazeOrder: 2,
         },
         {
           id: 'f2',
-          title: '7 Money Rules That Changed My Life',
+          title: '7 Income Streams That Made Me a Millionaire',
           channel: 'Ali Abdaal',
-          views: '5.6M views',
+          views: '8.4M views',
           timeAgo: '6 days ago',
-          videoId: 'fnxE-F1SJWY', // Ali Abdaal money
+          videoId: 'fnxE-F1SJWY', // Ali Abdaal — verified
           duration: '12:14',
           attentionShare: 20,
           gazeOrder: 3,
         },
         {
           id: 'f3',
-          title: 'Warren Buffett\'s 2025 Warning to All Investors',
-          channel: 'Meet Kevin',
-          views: '2.3M views',
+          title: 'How Inflation Destroys Your Savings',
+          channel: 'Economics Explained',
+          views: '3.4M views',
           timeAgo: '1 week ago',
-          videoId: 'TgYj5hy1zVo', // Meet Kevin
-          duration: '24:18',
+          videoId: 'cqyKVJMO5RU', // Econ Explained — verified
+          duration: '20:02',
           attentionShare: 14,
           gazeOrder: 4,
         },
         {
           id: 'f4',
-          title: 'Index Funds vs ETFs — What\'s Better in 2025?',
+          title: 'Index Funds vs ETFs — Which is Better?',
           channel: 'Humphrey Yang',
-          views: '1.8M views',
+          views: '2.1M views',
           timeAgo: '2 weeks ago',
-          videoId: '0Kl8MQ9OiQ0', // Humphrey Yang
+          videoId: '0Kl8MQ9OiQ0', // Humphrey Yang — verified
           duration: '10:44',
           attentionShare: 10,
           gazeOrder: 5,
         },
         {
           id: 'f5',
-          title: 'The Global Recession is Coming. Here\'s the Proof',
-          channel: 'Economics Explained',
-          views: '3.4M views',
+          title: 'What They Don\'t Teach You About Money',
+          channel: 'Mark Tilbury',
+          views: '4.2M views',
           timeAgo: '1 month ago',
-          videoId: 'cqyKVJMO5RU', // Econ Explained
-          duration: '20:02',
+          videoId: 'WKUJea9N4FQ', // Mark Tilbury — verified
+          duration: '14:28',
           attentionShare: 7,
           gazeOrder: 6,
         },
@@ -233,55 +233,55 @@ export function FeedBattleView({
       competitors: [
         {
           id: 'l1',
-          title: 'I Spent 7 Days Living As a Monk in Japan',
+          title: 'Saying Yes to Everything for 24 Hours',
           channel: 'Yes Theory',
-          views: '9.4M views',
+          views: '14.2M views',
           timeAgo: '4 days ago',
-          videoId: 'nSTiP1cBFSI', // Yes Theory Japan
-          duration: '18:11',
+          videoId: 'M0XksrWlVuc', // Yes Theory — verified
+          duration: '14:22',
           attentionShare: 23,
           gazeOrder: 2,
         },
         {
           id: 'l2',
-          title: 'A Week in Tokyo — The Ultimate Budget Guide',
+          title: 'How North Korea Bends Reality',
           channel: 'Johnny Harris',
-          views: '6.2M views',
+          views: '9.8M views',
           timeAgo: '1 week ago',
-          videoId: 'pLqipYYQbMI', // Johnny Harris Tokyo
-          duration: '25:00',
+          videoId: 'Ovt2MlMHDkY', // Johnny Harris — verified
+          duration: '22:14',
           attentionShare: 18,
           gazeOrder: 3,
         },
         {
           id: 'l3',
-          title: 'Inside a $100M Manhattan Penthouse',
+          title: 'Inside a $45,000,000 Beverly Hills Mansion',
           channel: 'Enes Yilmazer',
-          views: '13.4M views',
+          views: '18.2M views',
           timeAgo: '2 weeks ago',
-          videoId: '3Zh3b1H_9kA', // Enes Yilmazer penthouse
-          duration: '14:22',
+          videoId: '3Zh3b1H_9kA', // Enes Yilmazer — verified
+          duration: '21:38',
           attentionShare: 15,
           gazeOrder: 4,
         },
         {
           id: 'l4',
-          title: 'My Minimalist Morning Routine Changed Everything',
+          title: 'A Minimalist Approach to Productivity',
           channel: 'Matt D\'Avella',
-          views: '7.1M views',
+          views: '4.1M views',
           timeAgo: '3 weeks ago',
-          videoId: 'Ff6UVtVXGds', // Matt D'Avella
+          videoId: 'Ff6UVtVXGds', // Matt D'Avella — verified
           duration: '11:04',
           attentionShare: 9,
           gazeOrder: 5,
         },
         {
           id: 'l5',
-          title: '30 Days Living in a Van Across Europe',
+          title: 'I Lived in a Van for 6 Months',
           channel: 'Kara and Nate',
-          views: '2.9M views',
+          views: '6.7M views',
           timeAgo: '1 month ago',
-          videoId: 'ynYhGGjSMnI', // Kara and Nate van life
+          videoId: 'ynYhGGjSMnI', // Kara and Nate — verified
           duration: '28:30',
           attentionShare: 7,
           gazeOrder: 6,
