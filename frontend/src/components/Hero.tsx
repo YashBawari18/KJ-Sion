@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ArrowDown, Flame, Layers, Smartphone, Zap } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface HeroProps {
   onScrollToUpload: () => void;
@@ -9,34 +10,28 @@ interface HeroProps {
 }
 
 export function Hero({ onScrollToUpload, onExploreDemo }: HeroProps) {
-  return (
-    <section className="relative pt-10 pb-8 sm:pt-14 sm:pb-12 overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 -z-10 pointer-events-none opacity-60">
-        <div className="absolute top-4 left-1/4 w-72 h-72 bg-purple-300/40 rounded-full blur-3xl" />
-        <div className="absolute top-8 right-1/4 w-80 h-80 bg-indigo-300/35 rounded-full blur-3xl" />
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 w-96 h-48 bg-pink-200/30 rounded-full blur-3xl" />
-      </div>
+  const { t } = useLanguage();
 
+  return (
+    <section className="relative pt-8 pb-6 sm:pt-14 sm:pb-12 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 text-center">
         {/* Pill Tagline */}
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-50/80 border border-indigo-200/70 text-indigo-700 text-xs sm:text-sm font-medium mb-6 shadow-xs animate-fade-in">
-          <Zap className="w-4 h-4 text-indigo-600 fill-indigo-600/20" />
-          <span>Understand attention. Improve the thumbnail. Before you publish.</span>
+        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-medium mb-6 shadow-xs backdrop-blur-md animate-fade-in">
+          <Zap className="w-4 h-4 text-indigo-600 dark:text-indigo-400 fill-indigo-600/20" />
+          <span>{t('heroPill')}</span>
         </div>
 
         {/* Hero Title */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-          Where will viewers look{' '}
-          <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            in the first 500ms?
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+          {t('heroTitlePrefix')}{' '}
+          <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+            {t('heroTitleGradient')}
           </span>
         </h1>
 
         {/* Supporting description */}
-        <p className="mt-4 sm:mt-6 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          AI-powered predicted visual attention analysis for YouTube thumbnails.
-          Diagnose fixation hotspots, trace viewer scan journeys, and optimize your visual hierarchy before you post.
+        <p className="mt-4 sm:mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          {t('heroSubtitle')}
         </p>
 
         {/* CTA Buttons */}
@@ -44,61 +39,61 @@ export function Hero({ onScrollToUpload, onExploreDemo }: HeroProps) {
           <button
             onClick={onScrollToUpload}
             id="cta-analyze-btn"
-            className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold text-sm sm:text-base shadow-lg shadow-indigo-600/25 transition-all hover:scale-[1.02] active:scale-[0.99] flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold text-sm sm:text-base shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.02] active:scale-[0.99] flex items-center justify-center space-x-2"
           >
             <Flame className="w-4 h-4 text-amber-300" />
-            <span>Analyze Thumbnail</span>
+            <span>{t('ctaAnalyze')}</span>
             <ArrowDown className="w-4 h-4 text-white/80" />
           </button>
-          
+
           <button
             onClick={onExploreDemo}
             id="cta-demo-btn"
-            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-300/80 text-slate-700 font-semibold text-sm sm:text-base shadow-xs transition-all hover:border-slate-400 flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white/90 dark:bg-slate-900/90 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-300/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-sm sm:text-base shadow-xs backdrop-blur-md transition-all hover:border-slate-400 dark:hover:border-slate-700 flex items-center justify-center space-x-2"
           >
-            <span>Try 3 Demo Samples</span>
+            <span>{t('ctaDemos')}</span>
           </button>
         </div>
 
         {/* Quick feature badges */}
-        <div className="mt-10 pt-6 border-t border-slate-200/60 grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
-          <div className="flex items-center space-x-2.5 p-2 rounded-lg bg-slate-50/70 border border-slate-200/50">
-            <div className="w-7 h-7 rounded-md bg-purple-100 flex items-center justify-center text-purple-700">
+        <div className="mt-12 pt-6 border-t border-slate-200/60 dark:border-slate-800/60 grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
+          <div className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/60 dark:border-slate-800/80 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-950/70 flex items-center justify-center text-purple-700 dark:text-purple-300">
               <Flame className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800">Attention Heatmap</p>
-              <p className="text-[10px] text-slate-500">Signal fusion map</p>
+              <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">{t('featHeatmapTitle')}</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">{t('featHeatmapSub')}</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2.5 p-2 rounded-lg bg-slate-50/70 border border-slate-200/50">
-            <div className="w-7 h-7 rounded-md bg-indigo-100 flex items-center justify-center text-indigo-700">
+          <div className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/60 dark:border-slate-800/80 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950/70 flex items-center justify-center text-indigo-700 dark:text-indigo-300">
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800">Attention Journey</p>
-              <p className="text-[10px] text-slate-500">Scan path sequence</p>
+              <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">{t('featJourneyTitle')}</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">{t('featJourneySub')}</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2.5 p-2 rounded-lg bg-slate-50/70 border border-slate-200/50">
-            <div className="w-7 h-7 rounded-md bg-pink-100 flex items-center justify-center text-pink-700">
+          <div className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/60 dark:border-slate-800/80 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-lg bg-pink-100 dark:bg-pink-950/70 flex items-center justify-center text-pink-700 dark:text-pink-300">
               <Smartphone className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800">Mobile Previews</p>
-              <p className="text-[10px] text-slate-500">168px feed card check</p>
+              <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">{t('featMobileTitle')}</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">{t('featMobileSub')}</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2.5 p-2 rounded-lg bg-slate-50/70 border border-slate-200/50">
-            <div className="w-7 h-7 rounded-md bg-emerald-100 flex items-center justify-center text-emerald-700">
+          <div className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/60 dark:border-slate-800/80 backdrop-blur-md">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/70 flex items-center justify-center text-emerald-700 dark:text-emerald-300">
               <Zap className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800">Design Score</p>
-              <p className="text-[10px] text-slate-500">Prototype score /100</p>
+              <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">{t('featScoreTitle')}</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">{t('featScoreSub')}</p>
             </div>
           </div>
         </div>
