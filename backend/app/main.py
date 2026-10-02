@@ -53,6 +53,16 @@ async def startup_event():
     except Exception as e:
         logger.warning(f"Engine warmup completed with notice: {e}")
 
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "service": "Thumbnail IQ API",
+        "version": settings.app_version,
+        "docs_url": "/docs",
+        "health_url": "/health"
+    }
+
 @app.get("/health")
 async def health_check():
     return {
