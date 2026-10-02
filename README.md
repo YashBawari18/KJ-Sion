@@ -173,8 +173,51 @@ Thumbnail IQ comes pre-bundled with 3 non-copyrighted synthetic thumbnails gener
 
 ---
 
+## 🌐 Production Deployment Guide
+
+### Option 1: Vercel (Frontend) + Render / Railway (Backend) — *Recommended & Free*
+
+#### Step 1: Deploy Backend (Render.com)
+1. Go to [Render Dashboard](https://dashboard.render.com/) and click **New +** ➔ **Web Service**.
+2. Connect your GitHub repository `https://github.com/YashBawari18/KJ-Sion`.
+3. Configure the service:
+   - **Root Directory:** `backend`
+   - **Environment:** `Python 3`
+   - **Build Command:** `pip install --upgrade pip && pip install -r requirements.txt`
+   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Click **Create Web Service**. Once deployed, copy your backend URL (e.g. `https://thumbnail-iq-backend.onrender.com`).
+
+#### Step 2: Deploy Frontend (Vercel)
+1. Go to [Vercel Dashboard](https://vercel.com/new) and import your GitHub repository.
+2. Under **Root Directory**, click edit and select `frontend`.
+3. Under **Environment Variables**, add:
+   - `NEXT_PUBLIC_BACKEND_URL` = `https://your-backend-service.onrender.com` (your Render backend URL from Step 1)
+4. Click **Deploy**. Your app is live!
+
+---
+
+### Option 2: Docker / Docker Compose (Any Cloud VPS / Hostinger / DigitalOcean)
+
+Run the entire full-stack application (Next.js frontend + FastAPI backend) in isolated containers with a single command:
+
+```bash
+# Clone the repository
+git clone https://github.com/YashBawari18/KJ-Sion.git
+cd KJ-Sion
+
+# Build and run with Docker Compose
+docker compose up -d --build
+```
+
+- **Frontend:** `http://localhost:3000`
+- **Backend API Docs:** `http://localhost:8000/docs`
+- **Health Check:** `http://localhost:8000/health`
+
+---
+
 ## 🔮 Future Improvements
 - Multi-thumbnail A/B testing matrix side-by-side comparison.
 - OCR text extraction (EasyOCR/Tesseract) for sentiment and clickbait copy scoring.
 - Fine-tuned deep saliency model (e.g. Salicon / DeepGaze ONNX runtime) when GPU acceleration is available.
 - YouTube channel branding consistency check.
+
