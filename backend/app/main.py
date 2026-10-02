@@ -4,6 +4,8 @@ import logging
 from typing import Optional
 from fastapi import FastAPI, File, UploadFile, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+import cv2
+import numpy as np
 from PIL import Image
 
 from app.config import settings
@@ -16,6 +18,7 @@ from app.schemas import (
     AttentionJourneyStep,
     AttentionRegion
 )
+from app.cv_engine import engine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("thumbnail_iq")
@@ -37,9 +40,14 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Initializing Thumbnail IQ Backend...")
-    # Model warmup placeholder for demo safety
-    logger.info("Backend initialized and ready for requests.")
+    logger.info("Initializing Thumbnail IQ Backend with real CV Engine...")
+    # Demo safety warmup: Run a dummy 100x100 analysis to warm up OpenCV kernels
+    try:
+        dummy = Image.new("RGB", (160, 90), color=(100, 100, 100))
+        engine.run_pipeline(dummy)
+        logger.info("CV Engine warmed up successfully for instant demo response.")
+    except Exception as e:
+        logger.warning(f"Engine warmup completed with notice: {e}")
 
 @app.get("/health")
 async def health_check():
@@ -47,18 +55,26 @@ async def health_check():
         "status": "healthy",
         "service": "Thumbnail IQ API",
         "version": settings.app_version,
+        "cv_engine": "OpenCV Multi-Signal Attention Fusion",
         "disclaimer": "Predicted visual attention, not real eye tracking."
     }
 
 def image_to_base64(pil_image: Image.Image, format: str = "JPEG") -> str:
     buffered = io.BytesIO()
-    # Convert RGBA to RGB if saving as JPEG
     if format.upper() == "JPEG" and pil_image.mode in ("RGBA", "P"):
         pil_image = pil_image.convert("RGB")
-    pil_image.save(buffered, format=format, quality=90)
+    pil_image.save(buffered, format=format, quality=92)
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
     mime = "image/jpeg" if format.upper() == "JPEG" else f"image/{format.lower()}"
     return f"data:{mime};base64,{img_str}"
+
+def cv_image_to_base64(cv_bgr: np.ndarray, format: str = ".jpg") -> str:
+    success, buffer = cv2.imencode(format, cv_bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
+    if not success:
+        raise ValueError("Failed to encode CV image to base64")
+    b64 = base64.b64encode(buffer).decode("utf-8")
+    mime = "image/jpeg" if format.lower() in (".jpg", ".jpeg") else "image/png"
+    return f"data:{mime};base64,{b64}"
 
 @app.post("/analyze", response_model=AnalysisResponse)
 async def analyze_thumbnail(file: UploadFile = File(...)):
@@ -89,7 +105,6 @@ async def analyze_thumbnail(file: UploadFile = File(...)):
         try:
             image = Image.open(io.BytesIO(contents))
             image.verify()  # verify integrity
-            # Reopen after verify because verify can corrupt file pointer
             image = Image.open(io.BytesIO(contents))
         except Exception:
             raise HTTPException(
@@ -110,19 +125,15 @@ async def analyze_thumbnail(file: UploadFile = File(...)):
         # 4. Convert original image back to base64 Data URI
         orig_base64 = image_to_base64(image, format="JPEG" if image.format != "PNG" else "PNG")
 
-        pipeline_steps = [
-            PipelineStepStatus(step_name="image_validation", status="completed", details=f"Size: {proc_w}x{proc_h}"),
-            PipelineStepStatus(step_name="image_preprocessing", status="completed", details="Normalized & buffered"),
-            PipelineStepStatus(step_name="saliency_engine", status="completed", details="Stage A initial baseline"),
-            PipelineStepStatus(step_name="face_detection", status="completed", details="Ready for Stage B full fusion"),
-            PipelineStepStatus(step_name="text_detection", status="completed", details="Ready for Stage B full fusion")
-        ]
+        # 5. Execute Real Attention Fusion Pipeline (Stage B)
+        cv_result = engine.run_pipeline(image)
 
-        # Stage A baseline response: original image returned, prototype scores initialized
-        # In Stage B, full OpenCV saliency, face, text, contrast, and color fusion will run
+        # 6. Encode generated Heatmap Overlay to Base64 Data URI
+        heatmap_base64 = cv_image_to_base64(cv_result["heatmap_bgr"])
+
         return AnalysisResponse(
             success=True,
-            attention_score=78,
+            attention_score=cv_result["attention_score"],
             score_label="Prototype Design Score",
             image_metadata={
                 "filename": file.filename or "uploaded_thumbnail",
@@ -134,62 +145,14 @@ async def analyze_thumbnail(file: UploadFile = File(...)):
                 "format": image.format or "JPEG"
             },
             original_image=orig_base64,
-            heatmap=orig_base64, # In Stage A, echoes image so UI displays properly; Stage B builds real fused heatmap
-            journey=[
-                AttentionJourneyStep(
-                    step=1,
-                    label="Primary Focal Area",
-                    target="Center-Left Subject",
-                    bbox=[int(proc_w * 0.2), int(proc_h * 0.2), int(proc_w * 0.4), int(proc_h * 0.5)],
-                    description="Initial predicted fixation based on central bias and preliminary contrast."
-                ),
-                AttentionJourneyStep(
-                    step=2,
-                    label="Secondary Element",
-                    target="Visual Headline / Copy",
-                    bbox=[int(proc_w * 0.6), int(proc_h * 0.3), int(proc_w * 0.35), int(proc_h * 0.4)],
-                    description="Secondary scan area where high visual density attracts following gaze."
-                )
-            ],
-            regions=[
-                AttentionRegion(
-                    id=1,
-                    rank=1,
-                    label="Primary Subject",
-                    bbox=[int(proc_w * 0.2), int(proc_h * 0.2), int(proc_w * 0.4), int(proc_h * 0.5)],
-                    share_percent=55.0,
-                    reason="Strong visual contrast and prominent framing attract dominant first glance.",
-                    category="focal_point"
-                ),
-                AttentionRegion(
-                    id=2,
-                    rank=2,
-                    label="Supporting Element",
-                    bbox=[int(proc_w * 0.6), int(proc_h * 0.3), int(proc_w * 0.35), int(proc_h * 0.4)],
-                    share_percent=35.0,
-                    reason="Secondary high-frequency pattern following initial focal lock.",
-                    category="text"
-                )
-            ],
-            signals=SignalScores(
-                saliency=82.0,
-                face=75.0,
-                text=70.0,
-                contrast=80.0,
-                color=78.0,
-                composition=84.0
-            ),
-            recommendations=[
-                "Ensure maximum luminance contrast between your primary subject and the background.",
-                "Keep key text within 3-4 bold words to optimize mobile feed scannability.",
-                "Avoid placing critical focal elements in the lower-right corner where YouTube's timestamp overlays."
-            ],
-            why_analysis=[
-                "High edge contrast in the upper quadrant establishes an immediate focal entry point.",
-                "Secondary copy creates a clear directional path across the composition."
-            ],
-            pipeline_steps=pipeline_steps,
-            warnings=[],
+            heatmap=heatmap_base64,
+            journey=cv_result["journey"],
+            regions=cv_result["regions"],
+            signals=cv_result["signals"],
+            recommendations=cv_result["recommendations"],
+            why_analysis=cv_result["why_analysis"],
+            pipeline_steps=cv_result["pipeline_steps"],
+            warnings=cv_result["warnings"],
             scientific_disclaimer="Predicted visual attention, not real eye tracking."
         )
 
@@ -204,18 +167,35 @@ async def analyze_thumbnail(file: UploadFile = File(...)):
 
 @app.post("/explain", response_model=ExplainResponse)
 async def explain_analysis(req: ExplainRequest):
-    # Rule-based fallback explanation for Stage A
+    # Rule-based fallback explanation
+    analysis = req.analysis_data
+    regions = analysis.get("regions", [])
+    signals = analysis.get("signals", {})
+
+    strongest = "Central focal subjectCommanding prominent first-look fixation."
+    second_strongest = "Supporting visual elements in adjacent composition quadrant."
+    if len(regions) > 0:
+        strongest = f"{regions[0].get('label', 'Primary Area')}: {regions[0].get('reason', '')}"
+    if len(regions) > 1:
+        second_strongest = f"{regions[1].get('label', 'Secondary Area')}: {regions[1].get('reason', '')}"
+
+    competing = (
+        "Clear hierarchy observed."
+        if len(regions) < 2 or (regions[0].get("share_percent", 50) > 55)
+        else "Competing visual weights detected between subject and secondary graphics. Consider increasing primary contrast."
+    )
+
     return ExplainResponse(
         success=True,
-        strongest_area="Upper-left quadrant featuring high luminance contrast and dominant subject silhouette.",
-        second_strongest="High-density text/graphic region located in the adjacent horizontal third.",
-        competing_elements="Minimal competition detected; clean separation between foreground subject and background.",
-        visual_hierarchy="Clear linear flow from primary subject to headline text.",
-        likely_distractions="Check lower-right corner for YouTube timestamp badge collision.",
-        recommendations=[
-            "Boost outline glow on the main subject to increase separation.",
-            "Verify text legibility at small mobile sizes (168px width preview)."
-        ],
+        strongest_area=strongest,
+        second_strongest=second_strongest,
+        competing_elements=competing,
+        visual_hierarchy="Clear sequential scanning path from primary anchor to secondary copy.",
+        likely_distractions="Verify bottom-right corner is clear of YouTube's duration timestamp overlay.",
+        recommendations=analysis.get("recommendations", [
+            "Maintain strong contrast on key subject.",
+            "Test legibility on mobile feed card."
+        ]),
         source="rule_based"
     )
 
