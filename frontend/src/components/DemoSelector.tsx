@@ -35,8 +35,8 @@ const YT_DEMOS = [
   },
   {
     id: 'text',
-    videoId: 'jfKfPfyJRdk', // Lofi girl — bold text + mood thumbnail
-    youtubeUrl: 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
+    videoId: 'r6tH55syq0o', // Fireship — bold text-heavy, high typography saliency
+    youtubeUrl: 'https://www.youtube.com/watch?v=r6tH55syq0o',
     badgeLeft: 'TEXT-HEAVY',
     badgeRight: '81/100 Saliency',
     BadgeIcon: Type,
@@ -53,20 +53,20 @@ const YT_DEMOS = [
     waveformHeights: [55, 90, 80, 100, 60],
     waveformColor: 'bg-indigo-600 dark:bg-indigo-400',
     ctrLift: '+19.1%',
-    label: 'Lofi Hip Hop Radio — Beats to Relax / Study',
-    channel: 'Lofi Girl',
+    label: 'How programmers flex on each other',
+    channel: 'Fireship',
   },
   {
     id: 'product',
-    videoId: 'nzjmtJCvnFY', // MKBHD iPhones — product showcase
-    youtubeUrl: 'https://www.youtube.com/watch?v=nzjmtJCvnFY',
-    badgeLeft: 'PRODUCT-HEAVY',
+    videoId: 'aircAruvnKk', // 3Blue1Brown — educational diagram / product-style
+    youtubeUrl: 'https://www.youtube.com/watch?v=aircAruvnKk',
+    badgeLeft: 'EDUCATIONAL',
     badgeRight: '79/100 Saliency',
     BadgeIcon: Smartphone,
     badgeColor: 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/70 border-blue-200 dark:border-blue-800',
-    overlayTag: 'Device Focus: 86%',
+    overlayTag: 'Visual Focus: 86%',
     overlayDot: 'bg-blue-500',
-    distText: 'Device 48% · Creator 42% · Text 10%',
+    distText: 'Diagram 48% · Text 42% · BG 10%',
     distSegments: [
       { width: '48%', color: 'bg-blue-600' },
       { width: '42%', color: 'bg-amber-500' },
@@ -76,8 +76,8 @@ const YT_DEMOS = [
     waveformHeights: [65, 80, 100, 75, 50],
     waveformColor: 'bg-blue-600 dark:bg-blue-400',
     ctrLift: '+15.7%',
-    label: 'I Bought Every iPhone Ever Made',
-    channel: 'Marques Brownlee',
+    label: 'But what is a neural network? | Deep learning chapter 1',
+    channel: '3Blue1Brown',
   },
 ];
 

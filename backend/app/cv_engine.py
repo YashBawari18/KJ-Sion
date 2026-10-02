@@ -460,11 +460,25 @@ class AttentionFusionEngine:
         center_x0, center_x1 = int(w * 0.25), int(w * 0.75)
         center_y0, center_y1 = int(h * 0.20), int(h * 0.80)
 
+        # ── PERFORMANCE FIX ───────────────────────────────────────────
+        # HoughCircles on a full-res 720×1280 image can take 8–15 s.
+        # Downsample to max 240 px tall; scale results back afterwards.
+        TARGET_H = 240
+        scale = min(1.0, TARGET_H / float(h))
+        small_w = max(1, int(w * scale))
+        small_h = max(1, int(h * scale))
+        small_gray = cv2.resize(gray, (small_w, small_h)) if scale < 1.0 else gray
+
         circles = cv2.HoughCircles(
-            gray, cv2.HOUGH_GRADIENT, 1, 80,
+            small_gray, cv2.HOUGH_GRADIENT, 1, max(1, int(80 * scale)),
             param1=50, param2=30,
-            minRadius=int(h * 0.10), maxRadius=int(h * 0.35)
+            minRadius=max(1, int(small_h * 0.10)),
+            maxRadius=max(2, int(small_h * 0.35))
         )
+        # Scale circle coordinates back to original resolution
+        if circles is not None and scale < 1.0:
+            circles = circles / scale
+            circles[:, :, 2] = circles[:, :, 2]  # radius already scaled
 
         obj_boxes: List[List[int]] = []
         if circles is not None and len(face_boxes) == 0:
