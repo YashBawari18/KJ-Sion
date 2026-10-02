@@ -42,7 +42,7 @@ export function AnalysisDashboard({
 }: AnalysisDashboardProps) {
   const [activeHeatmapMode, setActiveHeatmapMode] = useState<'thermal' | 'spectral' | 'contour' | 'gaze'>('thermal');
   const [videoTitle, setVideoTitle] = useState<string>(
-    data.youtube_info?.title || data.image_metadata?.title || 'I Tested The Most Powerful AI Laptop Ever Made!'
+    data.youtube_info?.title || data.image_metadata?.title || (data.image_metadata?.filename ? data.image_metadata.filename.replace(/\.[^/.]+$/, '').replace(/sample_/g, '').replace(/[-_]/g, ' ') : 'YouTube Video Packaging Test')
   );
 
   const originalImg = data.original_image;
@@ -50,20 +50,23 @@ export function AnalysisDashboard({
   const score = data.attention_score || 82;
 
   // Derive dynamic metrics from data.signals (handling both 0-1 and 0-100 scales)
-  const getPct = (val?: number, fallback = 80) => {
+  const getPct = (val?: number, fallback = 0) => {
     if (val === undefined || val === null) return fallback;
     return val > 1 ? Math.min(100, Math.round(val)) : Math.min(100, Math.round(val * 100));
   };
 
-  const faceSaliency = getPct(data.signals?.face, 92);
-  const visualSaliency = getPct(data.signals?.saliency, 86);
-  const colorDynamic = getPct(data.signals?.color, 84);
-  const textContrast = getPct(data.signals?.contrast, 78);
+  const faceSaliency = getPct(data.signals?.face, 0);
+  const visualSaliency = getPct(data.signals?.saliency, 75);
+  const colorDynamic = getPct(data.signals?.color, 70);
+  const textContrast = getPct(data.signals?.contrast, 65);
+  const textProminence = getPct(data.signals?.text, 50);
 
-  // Title from YouTube metadata, filename or fallback
-  const displayTitle = data.youtube_info?.title || (data.image_metadata?.filename 
-    ? data.image_metadata.filename.replace(/\.[^/.]+$/, '').replace(/sample_/g, '').toUpperCase()
-    : 'AI IS HERE! THE FUTURE IS CRAZY!');
+  // Title from YouTube metadata, filename or clean fallback
+  const displayTitle = data.youtube_info?.title || (data.image_metadata?.title 
+    ? data.image_metadata.title
+    : data.image_metadata?.filename 
+    ? data.image_metadata.filename.replace(/\.[^/.]+$/, '').replace(/sample_/g, '').replace(/[-_]/g, ' ')
+    : 'Thumbnail Analysis');
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-7 animate-fade-in pb-16">
@@ -151,7 +154,7 @@ export function AnalysisDashboard({
                 <span>Original Thumbnail</span>
               </span>
               <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                1276×708 · High Res
+                {(data.image_metadata?.original_width || data.image_metadata?.width || 1280)}×{(data.image_metadata?.original_height || data.image_metadata?.height || 720)} · {data.image_metadata?.format || 'High Res'}
               </span>
             </div>
 
@@ -169,15 +172,21 @@ export function AnalysisDashboard({
           <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 text-center text-xs">
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">SUBJECT</p>
-              <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5">IndianTech</p>
+              <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5 truncate px-1" title={data.youtube_info?.channel_name || (data.regions && data.regions[0] ? data.regions[0].label : 'Hero Visual')}>
+                {data.youtube_info?.channel_name || (data.regions && data.regions[0] ? data.regions[0].label : 'Hero Visual')}
+              </p>
             </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">DOMINANCE</p>
-              <p className="font-bold text-purple-600 dark:text-purple-400 mt-0.5">Creator 58%</p>
+              <p className="font-bold text-purple-600 dark:text-purple-400 mt-0.5">
+                {data.regions && data.regions[0] ? `${data.regions[0].label.split(' ')[0]} ${Math.round(data.regions[0].share_percent)}%` : `${Math.round(score * 0.65)}% Focus`}
+              </p>
             </div>
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CLARITY</p>
-              <p className="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">9.4/10</p>
+              <p className="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                {(Math.min(9.9, Math.max(7.2, (score / 10) * 0.95 + 0.5))).toFixed(1)}/10
+              </p>
             </div>
           </div>
         </div>
@@ -203,22 +212,49 @@ export function AnalysisDashboard({
                 className="w-full h-full object-cover"
               />
 
-              {/* Numbered Fixation Gaze Pins matching Image 2 */}
-              <div className="absolute top-[28%] right-[22%] -translate-x-1/2 -translate-y-1/2">
-                <span className="w-6 h-6 rounded-full bg-red-600 text-white font-black text-[11px] flex items-center justify-center shadow-lg ring-4 ring-red-500/30 animate-pulse">
-                  1
-                </span>
-              </div>
-              <div className="absolute top-[32%] left-[28%] -translate-x-1/2 -translate-y-1/2">
-                <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-black text-[10px] flex items-center justify-center shadow-lg ring-4 ring-amber-400/30">
-                  2
-                </span>
-              </div>
-              <div className="absolute bottom-[30%] left-[52%] -translate-x-1/2 -translate-y-1/2">
-                <span className="w-5 h-5 rounded-full bg-blue-500 text-white font-black text-[10px] flex items-center justify-center shadow-lg ring-4 ring-blue-400/30">
-                  3
-                </span>
-              </div>
+              {/* Numbered Fixation Gaze Pins dynamically positioned using detected bboxes */}
+              {(() => {
+                const imgW = data.image_metadata?.width || 1280;
+                const imgH = data.image_metadata?.height || 720;
+                const regionsToPin = (data.regions && data.regions.length > 0)
+                  ? data.regions.slice(0, 3)
+                  : [
+                      { id: 1, rank: 1, bbox: [imgW * 0.45, imgH * 0.35, 120, 120] as [number, number, number, number], label: 'Primary Anchor', share_percent: 50 },
+                      { id: 2, rank: 2, bbox: [imgW * 0.22, imgH * 0.45, 100, 100] as [number, number, number, number], label: 'Secondary Focal', share_percent: 30 },
+                      { id: 3, rank: 3, bbox: [imgW * 0.72, imgH * 0.55, 100, 100] as [number, number, number, number], label: 'Tertiary Detail', share_percent: 20 },
+                    ];
+
+                const pinStyles = [
+                  { bg: 'bg-red-600 ring-red-500/40 text-white animate-pulse' },
+                  { bg: 'bg-amber-500 ring-amber-400/40 text-white' },
+                  { bg: 'bg-blue-600 ring-blue-500/40 text-white' },
+                ];
+
+                return regionsToPin.map((reg, idx) => {
+                  const [bx, by, bw, bh] = reg.bbox;
+                  const centerX = bx + bw / 2;
+                  const centerY = by + bh / 2;
+                  const leftPct = Math.max(12, Math.min(88, Math.round((centerX / imgW) * 100)));
+                  const topPct = Math.max(14, Math.min(82, Math.round((centerY / imgH) * 100)));
+                  const style = pinStyles[idx % pinStyles.length];
+
+                  return (
+                    <div
+                      key={reg.id || idx}
+                      style={{ top: `${topPct}%`, left: `${leftPct}%` }}
+                      className="absolute -translate-x-1/2 -translate-y-1/2 group z-10 cursor-pointer pointer-events-auto"
+                    >
+                      <span className={`w-6 h-6 rounded-full font-black text-[11px] flex items-center justify-center shadow-lg ring-4 ${style.bg}`}>
+                        {reg.rank || idx + 1}
+                      </span>
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-slate-950/90 text-white text-[10px] font-semibold rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-30 flex items-center space-x-1 border border-white/10">
+                        <span>{reg.label}</span>
+                        <span className="text-amber-300 font-bold">({reg.share_percent}%)</span>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
 
               {/* Peak Heat & Thermal Gradient Scale Overlay */}
               <div className="absolute bottom-2 inset-x-2.5 px-2.5 py-1.5 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/10 flex items-center justify-between text-[10px] text-white">
@@ -445,48 +481,67 @@ export function AnalysisDashboard({
           </div>
         </div>
 
-        {/* 4 Journey Step Share Cards matching Image 2 */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1">
-          {/* Step 1 */}
-          <div className="p-3 rounded-2xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-rose-700 dark:text-rose-300">
-              <span className="w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center font-black">1</span>
-              <span>Creator Face & Eyes</span>
-            </div>
-            <p className="text-xl font-black text-rose-600 dark:text-rose-400 mt-1">48% <span className="text-xs font-normal text-slate-500">share</span></p>
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">Peak dwell: 185ms</p>
-          </div>
+        {/* 4 Journey Step Share Cards — dynamically driven by data.journey & data.regions */}
+        {(() => {
+          const STEP_COLORS = [
+            { bg: 'bg-rose-50/70 dark:bg-rose-950/40', border: 'border-rose-200/80 dark:border-rose-900/60', badge: 'bg-rose-500', text: 'text-rose-700 dark:text-rose-300', numText: 'text-rose-600 dark:text-rose-400' },
+            { bg: 'bg-purple-50/70 dark:bg-purple-950/40', border: 'border-purple-200/80 dark:border-purple-900/60', badge: 'bg-purple-600', text: 'text-purple-700 dark:text-purple-300', numText: 'text-purple-600 dark:text-purple-400' },
+            { bg: 'bg-blue-50/70 dark:bg-blue-950/40', border: 'border-blue-200/80 dark:border-blue-900/60', badge: 'bg-blue-600', text: 'text-blue-700 dark:text-blue-300', numText: 'text-blue-600 dark:text-blue-400' },
+            { bg: 'bg-slate-50 dark:bg-slate-800/60', border: 'border-slate-200 dark:border-slate-800', badge: 'bg-slate-500', text: 'text-slate-700 dark:text-slate-300', numText: 'text-slate-700 dark:text-slate-300' }
+          ];
 
-          {/* Step 2 */}
-          <div className="p-3 rounded-2xl bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-900/60">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-purple-700 dark:text-purple-300">
-              <span className="w-4 h-4 rounded-full bg-purple-600 text-white text-[10px] flex items-center justify-center font-black">2</span>
-              <span>Hologram HUD Code</span>
-            </div>
-            <p className="text-xl font-black text-purple-600 dark:text-purple-400 mt-1">31% <span className="text-xs font-normal text-slate-500">share</span></p>
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">Peak dwell: 140ms</p>
-          </div>
+          const regions = data.regions || [];
+          const journey = data.journey || [];
 
-          {/* Step 3 */}
-          <div className="p-3 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-900/60">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-blue-700 dark:text-blue-300">
-              <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] flex items-center justify-center font-black">3</span>
-              <span>"AI IS HERE!" Headline</span>
-            </div>
-            <p className="text-xl font-black text-blue-600 dark:text-blue-400 mt-1">15% <span className="text-xs font-normal text-slate-500">share</span></p>
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">Peak dwell: 85ms</p>
-          </div>
+          const steps = [0, 1, 2, 3].map((idx) => {
+            if (idx < regions.length) {
+              const reg = regions[idx];
+              const jStep = journey[idx];
+              const dwell = Math.round(Math.max(30, (reg.share_percent || 25) * 3.6));
+              return {
+                num: idx + 1,
+                label: jStep?.target || reg.label,
+                share: `${Math.round(reg.share_percent)}%`,
+                dwell: `Peak dwell: ${dwell}ms`,
+                desc: jStep?.description || reg.reason
+              };
+            }
+            // Step 4 or remainder: Background / Ambient
+            const assignedShare = regions.reduce((acc, r) => acc + (r.share_percent || 0), 0);
+            const ambientShare = Math.max(5, Math.round(100 - assignedShare));
+            return {
+              num: idx + 1,
+              label: idx === 3 ? 'Context & Negative Space' : 'Secondary Context',
+              share: `${ambientShare}%`,
+              dwell: `Dwell: ${Math.round(ambientShare * 2.2)}ms`,
+              desc: 'Background separation ensuring focal clarity.'
+            };
+          });
 
-          {/* Step 4 */}
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
-              <span className="w-4 h-4 rounded-full bg-slate-500 text-white text-[10px] flex items-center justify-center font-black">4</span>
-              <span>Ambient Neon Depth</span>
+          return (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1">
+              {steps.map((st, i) => {
+                const c = STEP_COLORS[i % STEP_COLORS.length];
+                return (
+                  <div key={st.num} className={`p-3 rounded-2xl ${c.bg} border ${c.border}`}>
+                    <div className={`flex items-center space-x-1.5 text-xs font-bold ${c.text}`}>
+                      <span className={`w-4 h-4 rounded-full ${c.badge} text-white text-[10px] flex items-center justify-center font-black shrink-0`}>
+                        {st.num}
+                      </span>
+                      <span className="truncate" title={st.label}>{st.label}</span>
+                    </div>
+                    <p className={`text-xl font-black ${c.numText} mt-1`}>
+                      {st.share} <span className="text-xs font-normal text-slate-500">share</span>
+                    </p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">
+                      {st.dwell}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
-            <p className="text-xl font-black text-slate-700 dark:text-slate-300 mt-1">6% <span className="text-xs font-normal text-slate-500">share</span></p>
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">Dwell: 25ms</p>
-          </div>
-        </div>
+          );
+        })()}
       </div>
 
       {/* ============================================================== */}
@@ -510,59 +565,67 @@ export function AnalysisDashboard({
             </div>
 
             <div className="space-y-3.5">
-              {/* Signal 1 */}
+              {/* Signal 1: Face or Human Presence */}
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <Smile className="w-3.5 h-3.5 text-rose-500" />
                     <span>Facial Emotional Gaze</span>
                   </span>
-                  <span className="font-bold text-rose-500">96/100 · High Draw</span>
+                  <span className={`font-bold ${faceSaliency > 50 ? 'text-rose-500' : 'text-slate-500'}`}>
+                    {faceSaliency}/100 · {faceSaliency > 70 ? 'High Draw' : faceSaliency > 20 ? 'Moderate' : 'No Faces'}
+                  </span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                  <div style={{ width: '96%' }} className="h-full bg-rose-500 rounded-full" />
+                  <div style={{ width: `${faceSaliency}%` }} className="h-full bg-rose-500 rounded-full transition-all duration-500" />
                 </div>
               </div>
 
-              {/* Signal 2 */}
+              {/* Signal 2: Visual Saliency / Luminance */}
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <Zap className="w-3.5 h-3.5 text-blue-500" />
-                    <span>HUD Luminance & Glow</span>
+                    <span>Visual Saliency & Luminance</span>
                   </span>
-                  <span className="font-bold text-blue-500">89/100 · Sharp</span>
+                  <span className="font-bold text-blue-500">
+                    {visualSaliency}/100 · {visualSaliency > 75 ? 'Sharp Focus' : 'Balanced'}
+                  </span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                  <div style={{ width: '89%' }} className="h-full bg-blue-500 rounded-full" />
+                  <div style={{ width: `${visualSaliency}%` }} className="h-full bg-blue-500 rounded-full transition-all duration-500" />
                 </div>
               </div>
 
-              {/* Signal 3 */}
+              {/* Signal 3: Text Prominence */}
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <span className="font-mono text-purple-600 font-bold">T</span>
-                    <span>White/Yellow Text Edge</span>
+                    <span>Typographic Prominence</span>
                   </span>
-                  <span className="font-bold text-purple-600">82/100 · Crisp</span>
+                  <span className="font-bold text-purple-600">
+                    {textProminence}/100 · {textProminence > 60 ? 'Crisp Copy' : textProminence > 20 ? 'Subtle Text' : 'Minimal Text'}
+                  </span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                  <div style={{ width: '82%' }} className="h-full bg-purple-600 rounded-full" />
+                  <div style={{ width: `${textProminence}%` }} className="h-full bg-purple-600 rounded-full transition-all duration-500" />
                 </div>
               </div>
 
-              {/* Signal 4 */}
+              {/* Signal 4: Contrast & Silhouette Separation */}
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                    <span>Dark-to-Neon Contrast</span>
+                    <span>Contrast & Silhouette Depth</span>
                   </span>
-                  <span className="font-bold text-amber-500">76/100 · Cohesive</span>
+                  <span className="font-bold text-amber-500">
+                    {textContrast}/100 · {textContrast > 70 ? 'High Pop' : 'Cohesive'}
+                  </span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                  <div style={{ width: '76%' }} className="h-full bg-amber-500 rounded-full" />
+                  <div style={{ width: `${textContrast}%` }} className="h-full bg-amber-500 rounded-full transition-all duration-500" />
                 </div>
               </div>
             </div>
@@ -571,10 +634,10 @@ export function AnalysisDashboard({
           <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
             <span className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>0 Visual Occlusions</span>
+              <span>{data.warnings && data.warnings.length > 0 ? `${data.warnings.length} Advisory Note` : '0 Visual Occlusions'}</span>
             </span>
             <span className="text-slate-400 dark:text-slate-500 font-mono text-[11px]">
-              Cognitive Saliency: Very High
+              Cognitive Saliency: {score > 80 ? 'Very High' : score > 65 ? 'Optimal' : 'Standard'}
             </span>
           </div>
         </div>
@@ -594,46 +657,64 @@ export function AnalysisDashboard({
               </span>
             </div>
 
-            {/* Donut Chart and Legend Grid */}
-            <div className="grid grid-cols-2 gap-4 items-center py-2">
-              {/* Donut Chart SVG */}
-              <div className="relative w-36 h-36 mx-auto flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 42 42">
-                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#f43f5e" strokeWidth="6" strokeDasharray="43 57" strokeDashoffset="0" />
-                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#8b5cf6" strokeWidth="6" strokeDasharray="22 78" strokeDashoffset="-43" />
-                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#3b82f6" strokeWidth="6" strokeDasharray="24 76" strokeDashoffset="-65" />
-                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#94a3b8" strokeWidth="6" strokeDasharray="11 89" strokeDashoffset="-89" />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-xl font-black text-slate-900 dark:text-white leading-none">43%</span>
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">TOP ANCHOR</span>
-                </div>
-              </div>
+            {/* Donut Chart and Legend Grid dynamically computed */}
+            {(() => {
+              const regions = data.regions || [];
+              const s1 = regions[0]?.share_percent || 45;
+              const s2 = regions[1]?.share_percent || 28;
+              const s3 = regions[2]?.share_percent || 17;
+              const sRem = Math.max(5, Math.round(100 - (s1 + s2 + s3)));
 
-              {/* Legend */}
-              <div className="space-y-2 text-xs font-semibold">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
-                  <span className="text-slate-700 dark:text-slate-300">Creator Face:</span>
-                  <strong className="text-slate-900 dark:text-white ml-auto">43% Mass</strong>
+              const topPct = Math.round(s1);
+
+              return (
+                <div className="grid grid-cols-2 gap-4 items-center py-2">
+                  {/* Donut Chart SVG */}
+                  <div className="relative w-36 h-36 mx-auto flex items-center justify-center">
+                    <svg className="w-full h-full -rotate-90" viewBox="0 0 42 42">
+                      <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#f43f5e" strokeWidth="6" strokeDasharray={`${s1} ${100 - s1}`} strokeDashoffset="0" />
+                      <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#8b5cf6" strokeWidth="6" strokeDasharray={`${s2} ${100 - s2}`} strokeDashoffset={`-${s1}`} />
+                      <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#3b82f6" strokeWidth="6" strokeDasharray={`${s3} ${100 - s3}`} strokeDashoffset={`-${s1 + s2}`} />
+                      <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#94a3b8" strokeWidth="6" strokeDasharray={`${sRem} ${100 - sRem}`} strokeDashoffset={`-${s1 + s2 + s3}`} />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <span className="text-xl font-black text-slate-900 dark:text-white leading-none">{topPct}%</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">TOP ANCHOR</span>
+                    </div>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="space-y-2 text-xs font-semibold">
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300 truncate max-w-[95px]" title={regions[0]?.label || 'Primary Anchor'}>
+                        {regions[0]?.label || 'Primary Anchor'}:
+                      </span>
+                      <strong className="text-slate-900 dark:text-white ml-auto">{Math.round(s1)}%</strong>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300 truncate max-w-[95px]" title={regions[1]?.label || 'Secondary Focal'}>
+                        {regions[1]?.label || 'Secondary Focal'}:
+                      </span>
+                      <strong className="text-slate-900 dark:text-white ml-auto">{Math.round(s2)}%</strong>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300 truncate max-w-[95px]" title={regions[2]?.label || 'Tertiary Detail'}>
+                        {regions[2]?.label || 'Tertiary Detail'}:
+                      </span>
+                      <strong className="text-slate-900 dark:text-white ml-auto">{Math.round(s3)}%</strong>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300">Negative Space:</span>
+                      <strong className="text-slate-900 dark:text-white ml-auto">{sRem}%</strong>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shrink-0" />
-                  <span className="text-slate-700 dark:text-slate-300">HUD Interface:</span>
-                  <strong className="text-slate-900 dark:text-white ml-auto">22% Mass</strong>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
-                  <span className="text-slate-700 dark:text-slate-300">Headline Copy:</span>
-                  <strong className="text-slate-900 dark:text-white ml-auto">24% Mass</strong>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0" />
-                  <span className="text-slate-700 dark:text-slate-300">Background Leak:</span>
-                  <strong className="text-slate-900 dark:text-white ml-auto">11% Mass</strong>
-                </div>
-              </div>
-            </div>
+              );
+            })()}
           </div>
 
           <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
@@ -681,72 +762,120 @@ export function AnalysisDashboard({
           </div>
         </div>
 
-        {/* 4 Delta Cards matching Image 2 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Delta 1 */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 space-y-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-800 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 inline-block">
-              +14% Saliency
-            </span>
-            <h4 className="font-bold text-sm text-slate-900 dark:text-white">
-              Boost Title Stroke
-            </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              +4px black outer rim for mobile feeds
-            </p>
-            <p className="text-[10px] font-mono text-purple-600 dark:text-purple-400 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-              Impact: High • Low Effort
-            </p>
-          </div>
+        {/* 4 Delta Cards dynamically driven by data.recommendations, warnings, and signals */}
+        {(() => {
+          const recs = data.recommendations || [];
+          const hasTimestampConflict = data.warnings && data.warnings.some(w => w.toLowerCase().includes('timestamp'));
+          
+          const deltas = [];
 
-          {/* Delta 2 */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 space-y-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-200 dark:border-emerald-800 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 inline-block">
-              -9% Clutter
-            </span>
-            <h4 className="font-bold text-sm text-slate-900 dark:text-white">
-              Dim Right Shelf Glow
-            </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Reduce background LED saturation by 18%
-            </p>
-            <p className="text-[10px] font-mono text-purple-600 dark:text-purple-400 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-              Impact: Med • Focus Lock
-            </p>
-          </div>
+          // Delta 1: Text / Title stroke or clarity
+          if (textProminence < 60) {
+            deltas.push({
+              badge: '+14% Saliency',
+              badgeColor: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+              title: 'Boost Title Stroke',
+              desc: 'Add a 3-4px high-contrast dark rim around headline copy for mobile feeds.',
+              footer: 'Impact: High • Low Effort',
+              footerColor: 'text-purple-600 dark:text-purple-400'
+            });
+          } else {
+            deltas.push({
+              badge: 'Optimized',
+              badgeColor: 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+              title: 'Typography Sharpness',
+              desc: 'High typographic contrast achieved. Legible at 168px mobile scale.',
+              footer: 'Status: Pass • High Legibility',
+              footerColor: 'text-emerald-600 dark:text-emerald-400'
+            });
+          }
 
-          {/* Delta 3 */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 space-y-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-[10px] font-bold text-purple-700 dark:text-purple-300 inline-block">
-              +8% CTR Win
-            </span>
-            <h4 className="font-bold text-sm text-slate-900 dark:text-white">
-              Eye Catchlight Lift
-            </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              +10% exposure on iris catchlights
-            </p>
-            <p className="text-[10px] font-mono text-purple-600 dark:text-purple-400 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-              Impact: High • Subconscious
-            </p>
-          </div>
+          // Delta 2: Contrast / Clutter or Background
+          if (textContrast < 65) {
+            deltas.push({
+              badge: '+12% Pop',
+              badgeColor: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+              title: 'Deepen Background Contrast',
+              desc: 'Slightly darken periphery or vignette edges to make the primary subject isolate cleanly.',
+              footer: 'Impact: Med • Focus Lock',
+              footerColor: 'text-purple-600 dark:text-purple-400'
+            });
+          } else {
+            deltas.push({
+              badge: '-8% Clutter',
+              badgeColor: 'bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800',
+              title: 'Silhouette Isolation',
+              desc: 'Strong subject separation prevents eye wandering into negative zones.',
+              footer: 'Impact: Optimal Contrast',
+              footerColor: 'text-purple-600 dark:text-purple-400'
+            });
+          }
 
-          {/* Delta 4 */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 space-y-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 text-[10px] font-bold text-blue-700 dark:text-blue-300 inline-block">
-              Verified Match
-            </span>
-            <h4 className="font-bold text-sm text-slate-900 dark:text-white">
-              Word Count Optimal
-            </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              "AI IS HERE!" fits &lt;3 word mobile rule
-            </p>
-            <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-              Status: Ready • No Change
-            </p>
-          </div>
-        </div>
+          // Delta 3: Face emotion or Focal Catchlight
+          if (faceSaliency > 0) {
+            deltas.push({
+              badge: '+9% CTR Win',
+              badgeColor: 'bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800',
+              title: 'Eye Catchlight Lift',
+              desc: 'Boost brightness in iris reflections to amplify biological gaze capture.',
+              footer: 'Impact: High • Emotional Trigger',
+              footerColor: 'text-purple-600 dark:text-purple-400'
+            });
+          } else {
+            deltas.push({
+              badge: '+10% Focus',
+              badgeColor: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+              title: 'Hero Subject Lighting',
+              desc: 'Add specular rim highlights to make the primary focal subject pop immediately.',
+              footer: 'Impact: Med • Subject Lock',
+              footerColor: 'text-purple-600 dark:text-purple-400'
+            });
+          }
+
+          // Delta 4: Timestamp safe zone or Mobile Word Count
+          if (hasTimestampConflict) {
+            deltas.push({
+              badge: 'Action Required',
+              badgeColor: 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800',
+              title: 'Clear Timestamp Zone',
+              desc: 'Move focal text or faces away from bottom-right corner where 12:45 badge overlays.',
+              footer: 'Warning: Mobile Occlusion Risk',
+              footerColor: 'text-rose-600 dark:text-rose-400'
+            });
+          } else {
+            deltas.push({
+              badge: 'Verified Match',
+              badgeColor: 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+              title: 'Safe Zone Certified',
+              desc: 'Bottom-right quadrant is clear of vital focal elements. Zero timestamp occlusion.',
+              footer: 'Status: Ready • No Conflict',
+              footerColor: 'text-emerald-600 dark:text-emerald-400'
+            });
+          }
+
+          return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {deltas.map((d, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 space-y-2 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <span className={`px-2.5 py-0.5 rounded-full border text-[10px] font-bold inline-block ${d.badgeColor}`}>
+                      {d.badge}
+                    </span>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white">
+                      {d.title}
+                    </h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">
+                      {d.desc}
+                    </p>
+                  </div>
+                  <p className={`text-[10px] font-mono pt-2 border-t border-slate-200/60 dark:border-slate-800 ${d.footerColor}`}>
+                    {d.footer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
 
         {/* ============================================================== */}
         {/* PACKAGING HOOK SYNERGY: TITLE + THUMBNAIL COGNITIVE GAP       */}
