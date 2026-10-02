@@ -14,6 +14,8 @@ export interface AttentionJourneyStep {
   target: string;
   bbox: [number, number, number, number];
   description: string;
+  reason?: string;
+  contribution_percent?: number;
 }
 
 export interface SignalScores {
@@ -23,6 +25,11 @@ export interface SignalScores {
   contrast: number;
   color: number;
   composition: number;
+  // Aliases for compatibility
+  face_saliency?: number;
+  text_prominence?: number;
+  contrast_edge?: number;
+  color_harmony?: number;
 }
 
 export interface PipelineStepStatus {
