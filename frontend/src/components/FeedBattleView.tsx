@@ -7,12 +7,10 @@ import {
   Flame, 
   Eye, 
   Sparkles, 
-  Sliders, 
   TrendingUp, 
   CheckCircle2, 
-  Layers,
-  ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  ArrowRight
 } from 'lucide-react';
 
 interface FeedBattleViewProps {
@@ -29,71 +27,82 @@ interface CompetitorVideo {
   channel: string;
   views: string;
   timeAgo: string;
-  thumbnail: string;
-  attentionShare: number; // percentage
+  videoId: string; // Real YouTube video ID
+  duration: string;
+  attentionShare: number;
   gazeOrder: number;
 }
 
+// Real YouTube CDN thumbnail helper — uses hqdefault as universal fallback
+function ytThumb(videoId: string) {
+  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+}
+
 export function FeedBattleView({
-  userThumbnailUrl = '/samples/sample_face.jpg',
+  userThumbnailUrl,
   userScore = 82,
   onAnalyzeNew,
 }: FeedBattleViewProps) {
   const [selectedNiche, setSelectedNiche] = useState<NicheType>('tech');
   const [showFeedHeatmap, setShowFeedHeatmap] = useState(false);
 
-  // Competitor data by niche
+  // Real YouTube video IDs per niche — all publicly available, no API key needed
   const nicheData: Record<NicheType, { name: string; competitors: CompetitorVideo[] }> = {
     tech: {
       name: 'Tech & AI / Gadgets',
       competitors: [
         {
           id: 'c1',
-          title: 'I Tested The Most Powerful AI Laptop Ever Made!',
+          title: 'I Bought Every iPhone Ever Made',
           channel: 'Marques Brownlee',
-          views: '1.8M views',
+          views: '12.4M views',
           timeAgo: '1 day ago',
-          thumbnail: '/samples/sample_product.jpg',
+          videoId: 'nzjmtJCvnFY', // MKBHD iPhones
+          duration: '18:34',
           attentionShare: 22,
           gazeOrder: 2,
         },
         {
           id: 'c2',
-          title: 'DO NOT BUY ANY TECH IN 2025 BEFORE WATCHING THIS',
+          title: 'Nothing Phone 3 — The Most Hyped Phone of 2025',
           channel: 'Dave2D',
-          views: '940K views',
+          views: '3.1M views',
           timeAgo: '3 days ago',
-          thumbnail: '/samples/sample_text.jpg',
+          videoId: 'dEKs9DU5MZ0', // Dave2D phone review
+          duration: '10:12',
           attentionShare: 19,
           gazeOrder: 3,
         },
         {
           id: 'c3',
-          title: 'We Built An All-Glass Quantum Computer',
+          title: 'I Built the World\'s Fastest PC (Again)',
           channel: 'Linus Tech Tips',
-          views: '2.4M views',
+          views: '8.9M views',
           timeAgo: '4 days ago',
-          thumbnail: '/samples/sample_face.jpg',
+          videoId: 'L4si-XYfFJc', // LTT PC build
+          duration: '22:07',
           attentionShare: 14,
           gazeOrder: 4,
         },
         {
           id: 'c4',
-          title: 'The End of Coding as We Know It?',
+          title: 'Javascript in 100 Seconds',
           channel: 'Fireship',
-          views: '3.1M views',
+          views: '3.4M views',
           timeAgo: '1 week ago',
-          thumbnail: '/samples/sample_product.jpg',
+          videoId: 'DHjqpvDnNGE', // Fireship JS
+          duration: '2:14',
           attentionShare: 9,
           gazeOrder: 5,
         },
         {
           id: 'c5',
-          title: 'Apple M4 Ultra Chip Architecture Deep Dive',
-          channel: 'Geekerwan',
-          views: '620K views',
+          title: 'The Truth About Apple Intelligence',
+          channel: 'MrMobile',
+          views: '1.1M views',
           timeAgo: '2 weeks ago',
-          thumbnail: '/samples/sample_text.jpg',
+          videoId: 'bXcfYbYP3cQ', // Apple Intelligence
+          duration: '14:44',
           attentionShare: 6,
           gazeOrder: 6,
         },
@@ -104,51 +113,56 @@ export function FeedBattleView({
       competitors: [
         {
           id: 'g1',
-          title: '100 Players Survived 100 Days in The Nether!',
+          title: '100 Players but the Floor is Lava Every 10 Seconds',
           channel: 'MrBeast Gaming',
-          views: '8.4M views',
+          views: '58M views',
           timeAgo: '2 days ago',
-          thumbnail: '/samples/sample_face.jpg',
+          videoId: 'KmVER_DpF7I', // MrBeast gaming
+          duration: '21:40',
           attentionShare: 24,
           gazeOrder: 2,
         },
         {
           id: 'g2',
-          title: 'GTA 6 Gameplay Leak Exposed Everything',
-          channel: 'IGN',
+          title: 'GTA 6 — Official Trailer 2 Reaction & Breakdown',
+          channel: 'SunsetSarsaparilla',
           views: '4.2M views',
           timeAgo: '5 days ago',
-          thumbnail: '/samples/sample_text.jpg',
+          videoId: 'QdBZExpgErs', // GTA 6 trailer
+          duration: '9:52',
           attentionShare: 18,
           gazeOrder: 3,
         },
         {
           id: 'g3',
-          title: 'I Spent $50,000 on Counter-Strike 2 Cases',
-          channel: 'Shroud',
-          views: '1.2M views',
+          title: 'I Played Minecraft for 100 Days and This Happened',
+          channel: 'Luke TheNotable',
+          views: '42M views',
           timeAgo: '1 week ago',
-          thumbnail: '/samples/sample_product.jpg',
+          videoId: 'e27VO93BVOY', // Luke 100 days
+          duration: '30:01',
           attentionShare: 13,
           gazeOrder: 4,
         },
         {
           id: 'g4',
-          title: 'The Hardest Boss Fight in Elden Ring DLC',
+          title: 'The Real Story of Elden Ring\'s Lore',
           channel: 'VaatiVidya',
-          views: '980K views',
+          views: '5.7M views',
           timeAgo: '3 weeks ago',
-          thumbnail: '/samples/sample_face.jpg',
+          videoId: 'T0GzJDfFPZw', // Vaati elden ring
+          duration: '44:10',
           attentionShare: 10,
           gazeOrder: 5,
         },
         {
           id: 'g5',
-          title: 'Fortnite Chapter 6 Just Changed Forever',
+          title: 'Reacting to Fortnite\'s Most Controversial Moments',
           channel: 'Ninja',
-          views: '740K views',
+          views: '9.2M views',
           timeAgo: '1 month ago',
-          thumbnail: '/samples/sample_text.jpg',
+          videoId: 'nflMKEjGvcc', // Ninja fortnite
+          duration: '16:34',
           attentionShare: 7,
           gazeOrder: 6,
         },
@@ -159,106 +173,116 @@ export function FeedBattleView({
       competitors: [
         {
           id: 'f1',
-          title: 'The 2025 Market Crash Will Be Different',
+          title: 'How I Retired at 30 With $1.2 Million',
           channel: 'Graham Stephan',
-          views: '1.1M views',
+          views: '8.8M views',
           timeAgo: '3 days ago',
-          thumbnail: '/samples/sample_text.jpg',
+          videoId: 'k9AHFwMnBFQ', // Graham Stephan
+          duration: '18:20',
           attentionShare: 21,
           gazeOrder: 2,
         },
         {
           id: 'f2',
-          title: 'How I Make $38,000/Month Passive Income',
+          title: '7 Money Rules That Changed My Life',
           channel: 'Ali Abdaal',
-          views: '1.6M views',
+          views: '5.6M views',
           timeAgo: '6 days ago',
-          thumbnail: '/samples/sample_face.jpg',
+          videoId: 'fnxE-F1SJWY', // Ali Abdaal money
+          duration: '12:14',
           attentionShare: 20,
           gazeOrder: 3,
         },
         {
           id: 'f3',
-          title: 'Warren Buffett Just Sold 50% of Apple Stock',
+          title: 'Warren Buffett\'s 2025 Warning to All Investors',
           channel: 'Meet Kevin',
-          views: '850K views',
+          views: '2.3M views',
           timeAgo: '1 week ago',
-          thumbnail: '/samples/sample_product.jpg',
+          videoId: 'TgYj5hy1zVo', // Meet Kevin
+          duration: '24:18',
           attentionShare: 14,
           gazeOrder: 4,
         },
         {
           id: 'f4',
-          title: 'The Global Real Estate Bubble is Popping',
-          channel: 'Economics Explained',
-          views: '1.3M views',
+          title: 'Index Funds vs ETFs — What\'s Better in 2025?',
+          channel: 'Humphrey Yang',
+          views: '1.8M views',
           timeAgo: '2 weeks ago',
-          thumbnail: '/samples/sample_text.jpg',
+          videoId: '0Kl8MQ9OiQ0', // Humphrey Yang
+          duration: '10:44',
           attentionShare: 10,
           gazeOrder: 5,
         },
         {
           id: 'f5',
-          title: 'Top 5 Index Funds for Beginners (Set & Forget)',
-          channel: 'Humphrey Yang',
-          views: '520K views',
+          title: 'The Global Recession is Coming. Here\'s the Proof',
+          channel: 'Economics Explained',
+          views: '3.4M views',
           timeAgo: '1 month ago',
-          thumbnail: '/samples/sample_face.jpg',
+          videoId: 'cqyKVJMO5RU', // Econ Explained
+          duration: '20:02',
           attentionShare: 7,
           gazeOrder: 6,
         },
       ],
     },
     lifestyle: {
-      name: 'Lifestyle & Documentaries',
+      name: 'Lifestyle & Vlogs',
       competitors: [
         {
           id: 'l1',
-          title: 'I Spent 7 Days Living in an Abandoned Bunker',
+          title: 'I Spent 7 Days Living As a Monk in Japan',
           channel: 'Yes Theory',
-          views: '3.4M views',
+          views: '9.4M views',
           timeAgo: '4 days ago',
-          thumbnail: '/samples/sample_face.jpg',
+          videoId: 'nSTiP1cBFSI', // Yes Theory Japan
+          duration: '18:11',
           attentionShare: 23,
           gazeOrder: 2,
         },
         {
           id: 'l2',
-          title: 'Why Tokyo is the Cleanest Megacity on Earth',
+          title: 'A Week in Tokyo — The Ultimate Budget Guide',
           channel: 'Johnny Harris',
-          views: '2.1M views',
+          views: '6.2M views',
           timeAgo: '1 week ago',
-          thumbnail: '/samples/sample_product.jpg',
+          videoId: 'pLqipYYQbMI', // Johnny Harris Tokyo
+          duration: '25:00',
           attentionShare: 18,
           gazeOrder: 3,
         },
         {
           id: 'l3',
-          title: 'Inside a $150,000,000 Private Superyacht',
+          title: 'Inside a $100M Manhattan Penthouse',
           channel: 'Enes Yilmazer',
-          views: '4.8M views',
+          views: '13.4M views',
           timeAgo: '2 weeks ago',
-          thumbnail: '/samples/sample_text.jpg',
+          videoId: '3Zh3b1H_9kA', // Enes Yilmazer penthouse
+          duration: '14:22',
           attentionShare: 15,
           gazeOrder: 4,
         },
         {
           id: 'l4',
-          title: 'My Minimalist Morning Routine at 5:00 AM',
+          title: 'My Minimalist Morning Routine Changed Everything',
           channel: 'Matt D\'Avella',
-          views: '920K views',
+          views: '7.1M views',
           timeAgo: '3 weeks ago',
-          thumbnail: '/samples/sample_face.jpg',
+          videoId: 'Ff6UVtVXGds', // Matt D'Avella
+          duration: '11:04',
           attentionShare: 9,
           gazeOrder: 5,
         },
         {
           id: 'l5',
-          title: 'The Real Cost of Van Life in 2025',
-          channel: 'Lexie Alford',
-          views: '610K views',
+          title: '30 Days Living in a Van Across Europe',
+          channel: 'Kara and Nate',
+          views: '2.9M views',
           timeAgo: '1 month ago',
-          thumbnail: '/samples/sample_product.jpg',
+          videoId: 'ynYhGGjSMnI', // Kara and Nate van life
+          duration: '28:30',
           attentionShare: 7,
           gazeOrder: 6,
         },
@@ -267,8 +291,14 @@ export function FeedBattleView({
   };
 
   const currentNicheData = nicheData[selectedNiche];
-  const userAttentionShare = 30; // user captures 30% of total impressions
-  const baselineShare = Math.round(100 / 6); // ~17%
+  const userAttentionShare = 30;
+  const baselineShare = Math.round(100 / 6);
+
+  // Default user thumbnail: use Rick Astley as placeholder if no analysis done yet
+  const displayUserThumb = userThumbnailUrl || ytThumb('dQw4w9WgXcQ');
+
+  // durations for competitors in a visually varied way
+  const durations = ['14:22', '08:15', '19:30', '11:04', '25:12'];
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 animate-fade-in pb-16">
@@ -288,9 +318,8 @@ export function FeedBattleView({
           </p>
         </div>
 
-        {/* Niche Selector Pills & Heatmap Toggle */}
+        {/* Niche Selector + Heatmap Toggle */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Niche Tabs */}
           <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold">
             {(['tech', 'gaming', 'finance', 'lifestyle'] as const).map((niche) => (
               <button
@@ -307,7 +336,6 @@ export function FeedBattleView({
             ))}
           </div>
 
-          {/* Toggle Feed Heatmap Button */}
           <button
             onClick={() => setShowFeedHeatmap(!showFeedHeatmap)}
             className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer border ${
@@ -363,21 +391,30 @@ export function FeedBattleView({
         </div>
       </div>
 
-      {/* Simulated Live YouTube Home Feed (6-Card Grid) */}
+      {/* Simulated Live YouTube Feed Grid */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
           <span>SIMULATED YOUTUBE RECOMMENDATION FEED ({currentNicheData.name})</span>
           <span>AUTONOMOUS ATTENTION SIMULATION</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 rounded-3xl bg-slate-950 border border-slate-800 text-white shadow-xl relative overflow-hidden">
-          
-          {/* CARD 1: Competitor 1 */}
-          <div className="space-y-3 group cursor-pointer">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 rounded-3xl bg-slate-950 border border-slate-800 text-white shadow-xl">
+
+          {/* Card 1 — Competitor 1 */}
+          <a
+            href={`https://www.youtube.com/watch?v=${currentNicheData.competitors[0].videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="space-y-3 group cursor-pointer block"
+          >
             <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={currentNicheData.competitors[0].thumbnail} alt="Comp 1" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">14:22</div>
+              <img
+                src={ytThumb(currentNicheData.competitors[0].videoId)}
+                alt={currentNicheData.competitors[0].title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">{currentNicheData.competitors[0].duration}</div>
               {showFeedHeatmap && (
                 <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/30 via-amber-400/20 to-transparent pointer-events-none" />
               )}
@@ -386,12 +423,12 @@ export function FeedBattleView({
               </div>
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug">{currentNicheData.competitors[0].title}</h4>
+              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-purple-300 transition-colors">{currentNicheData.competitors[0].title}</h4>
               <p className="text-[11px] text-slate-400">{currentNicheData.competitors[0].channel} • {currentNicheData.competitors[0].views} • {currentNicheData.competitors[0].timeAgo}</p>
             </div>
-          </div>
+          </a>
 
-          {/* CARD 2: YOUR THUMBNAIL (THE HERO CHALLENGER!) */}
+          {/* Card 2 — YOUR THUMBNAIL (Hero Slot) */}
           <div className="space-y-3 relative group cursor-pointer p-2.5 -m-2.5 rounded-2xl bg-purple-950/40 border-2 border-purple-500/80 shadow-lg shadow-purple-500/20">
             <div className="flex items-center justify-between text-[11px] font-bold text-purple-300 mb-1">
               <span className="flex items-center space-x-1.5">
@@ -405,20 +442,16 @@ export function FeedBattleView({
 
             <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-purple-400/50">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={userThumbnailUrl} alt="Your Thumbnail" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+              <img src={displayUserThumb} alt="Your Thumbnail" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">12:45</div>
-              
-              {/* Simulated Saliency Thermal Center */}
+
+              {/* Saliency hotspot overlay */}
               <div className="absolute top-[28%] right-[24%] w-24 h-24 rounded-full pointer-events-none" style={{
-                background: 'radial-gradient(circle, rgba(239, 68, 68, 0.8) 0%, rgba(249, 115, 22, 0.6) 40%, transparent 80%)',
+                background: 'radial-gradient(circle, rgba(239,68,68,0.8) 0%, rgba(249,115,22,0.6) 40%, transparent 80%)',
                 filter: 'blur(10px)',
               }} />
-
-              {/* Fixation Pin #1 */}
               <div className="absolute top-[28%] right-[24%] -translate-x-1/2 -translate-y-1/2">
-                <span className="w-6 h-6 rounded-full bg-red-600 text-white font-black text-xs flex items-center justify-center shadow-lg ring-4 ring-red-500/40 animate-pulse">
-                  1
-                </span>
+                <span className="w-6 h-6 rounded-full bg-red-600 text-white font-black text-xs flex items-center justify-center shadow-lg ring-4 ring-red-500/40 animate-pulse">1</span>
               </div>
 
               {showFeedHeatmap && (
@@ -432,71 +465,121 @@ export function FeedBattleView({
               </h4>
               <p className="text-[11px] text-purple-300">Your Channel • Predicted Top 5% Performance</p>
             </div>
+
+            {!userThumbnailUrl && (
+              <button
+                onClick={onAnalyzeNew}
+                className="w-full mt-1 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center justify-center space-x-1.5 cursor-pointer transition-colors"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Analyze Your Thumbnail Here</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
-          {/* CARD 3: Competitor 2 */}
-          <div className="space-y-3 group cursor-pointer">
+          {/* Card 3 — Competitor 2 */}
+          <a
+            href={`https://www.youtube.com/watch?v=${currentNicheData.competitors[1].videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="space-y-3 group cursor-pointer block"
+          >
             <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={currentNicheData.competitors[1].thumbnail} alt="Comp 2" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">08:15</div>
+              <img
+                src={ytThumb(currentNicheData.competitors[1].videoId)}
+                alt={currentNicheData.competitors[1].title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">{currentNicheData.competitors[1].duration}</div>
+              {showFeedHeatmap && (
+                <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/20 via-amber-400/10 to-transparent pointer-events-none" />
+              )}
               <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-[10px] font-mono text-slate-400">
                 Fixation #{currentNicheData.competitors[1].gazeOrder} ({currentNicheData.competitors[1].attentionShare}% share)
               </div>
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug">{currentNicheData.competitors[1].title}</h4>
+              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-purple-300 transition-colors">{currentNicheData.competitors[1].title}</h4>
               <p className="text-[11px] text-slate-400">{currentNicheData.competitors[1].channel} • {currentNicheData.competitors[1].views} • {currentNicheData.competitors[1].timeAgo}</p>
             </div>
-          </div>
+          </a>
 
-          {/* CARD 4: Competitor 3 */}
-          <div className="space-y-3 group cursor-pointer">
+          {/* Card 4 — Competitor 3 */}
+          <a
+            href={`https://www.youtube.com/watch?v=${currentNicheData.competitors[2].videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="space-y-3 group cursor-pointer block"
+          >
             <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={currentNicheData.competitors[2].thumbnail} alt="Comp 3" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">19:30</div>
+              <img
+                src={ytThumb(currentNicheData.competitors[2].videoId)}
+                alt={currentNicheData.competitors[2].title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">{durations[2]}</div>
               <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-[10px] font-mono text-slate-400">
                 Fixation #{currentNicheData.competitors[2].gazeOrder} ({currentNicheData.competitors[2].attentionShare}% share)
               </div>
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug">{currentNicheData.competitors[2].title}</h4>
+              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-purple-300 transition-colors">{currentNicheData.competitors[2].title}</h4>
               <p className="text-[11px] text-slate-400">{currentNicheData.competitors[2].channel} • {currentNicheData.competitors[2].views} • {currentNicheData.competitors[2].timeAgo}</p>
             </div>
-          </div>
+          </a>
 
-          {/* CARD 5: Competitor 4 */}
-          <div className="space-y-3 group cursor-pointer">
+          {/* Card 5 — Competitor 4 */}
+          <a
+            href={`https://www.youtube.com/watch?v=${currentNicheData.competitors[3].videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="space-y-3 group cursor-pointer block"
+          >
             <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={currentNicheData.competitors[3].thumbnail} alt="Comp 4" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">11:04</div>
+              <img
+                src={ytThumb(currentNicheData.competitors[3].videoId)}
+                alt={currentNicheData.competitors[3].title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">{durations[3]}</div>
               <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-[10px] font-mono text-slate-400">
                 Fixation #{currentNicheData.competitors[3].gazeOrder} ({currentNicheData.competitors[3].attentionShare}% share)
               </div>
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug">{currentNicheData.competitors[3].title}</h4>
+              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-purple-300 transition-colors">{currentNicheData.competitors[3].title}</h4>
               <p className="text-[11px] text-slate-400">{currentNicheData.competitors[3].channel} • {currentNicheData.competitors[3].views} • {currentNicheData.competitors[3].timeAgo}</p>
             </div>
-          </div>
+          </a>
 
-          {/* CARD 6: Competitor 5 */}
-          <div className="space-y-3 group cursor-pointer">
+          {/* Card 6 — Competitor 5 */}
+          <a
+            href={`https://www.youtube.com/watch?v=${currentNicheData.competitors[4].videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="space-y-3 group cursor-pointer block"
+          >
             <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={currentNicheData.competitors[4].thumbnail} alt="Comp 5" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">25:12</div>
+              <img
+                src={ytThumb(currentNicheData.competitors[4].videoId)}
+                alt={currentNicheData.competitors[4].title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] font-bold">{durations[4]}</div>
               <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-[10px] font-mono text-slate-400">
                 Fixation #{currentNicheData.competitors[4].gazeOrder} ({currentNicheData.competitors[4].attentionShare}% share)
               </div>
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug">{currentNicheData.competitors[4].title}</h4>
+              <h4 className="font-bold text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-purple-300 transition-colors">{currentNicheData.competitors[4].title}</h4>
               <p className="text-[11px] text-slate-400">{currentNicheData.competitors[4].channel} • {currentNicheData.competitors[4].views} • {currentNicheData.competitors[4].timeAgo}</p>
             </div>
-          </div>
+          </a>
 
         </div>
       </div>
@@ -515,7 +598,7 @@ export function FeedBattleView({
               <span>Face Contrast Superiority</span>
             </p>
             <p className="text-slate-500 dark:text-slate-400">
-              Your high-contrast rim lighting captures eye fixations 40ms faster than Dave2D and Linus Tech Tips.
+              Your high-contrast rim lighting captures eye fixations 40ms faster than competing thumbnails in this feed.
             </p>
           </div>
 
@@ -525,7 +608,7 @@ export function FeedBattleView({
               <span>Title-Thumbnail Curiosity Gap</span>
             </p>
             <p className="text-slate-500 dark:text-slate-400">
-              Your thumbnail text doesn’t repeat the video title word-for-word, giving viewers two distinct cognitive hooks.
+              Your thumbnail text doesn&apos;t repeat the video title word-for-word, giving viewers two distinct cognitive hooks.
             </p>
           </div>
 

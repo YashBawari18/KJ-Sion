@@ -202,7 +202,7 @@ export default function Home() {
             {/* Try Demo Thumbnails (Comparative Attention Audits) */}
             <div id="demo-thumbnails-section">
               <DemoSelector
-                onSelectSample={handleSelectSample}
+                onSelectYouTube={handleYouTubeSelect}
                 isLoading={isAnalyzing}
               />
             </div>
@@ -230,7 +230,7 @@ export default function Home() {
         {currentPage === 'battle' && (
           <div className="space-y-8 animate-fade-in">
             <FeedBattleView
-              userThumbnailUrl={analysisResult?.original_image || '/samples/sample_face.jpg'}
+              userThumbnailUrl={analysisResult?.original_image || undefined}
               userScore={analysisResult?.attention_score || 82}
               onAnalyzeNew={() => setCurrentPage('analyze')}
             />
@@ -243,7 +243,7 @@ export default function Home() {
         {currentPage === 'demo' && (
           <div className="space-y-8 animate-fade-in">
             <DemoSelector
-              onSelectSample={handleSelectSample}
+              onSelectYouTube={handleYouTubeSelect}
               isLoading={isAnalyzing}
             />
           </div>
