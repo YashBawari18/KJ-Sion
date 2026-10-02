@@ -1,7 +1,10 @@
 import io
+import re
+import json
 import base64
 import logging
-from typing import Optional
+import urllib.request
+from typing import Optional, Tuple, Dict, Any
 from fastapi import FastAPI, File, UploadFile, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 import cv2
@@ -11,6 +14,7 @@ from PIL import Image
 from app.config import settings
 from app.schemas import (
     AnalysisResponse,
+    YouTubeAnalyzeRequest,
     ExplainRequest,
     ExplainResponse,
     SignalScores,
@@ -167,13 +171,161 @@ async def analyze_thumbnail(file: UploadFile = File(...)):
 
 from app.llm_explainer import explainer
 
+def extract_youtube_id(url_or_id: str) -> Optional[str]:
+    """Extract standard 11-char YouTube video ID from various URL formats or raw ID."""
+    clean = url_or_id.strip()
+    patterns = [
+        r'(?:v=|\/)([0-9A-Za-z_-]{11})(?:\S+)?',
+        r'youtu\.be\/([0-9A-Za-z_-]{11})',
+        r'shorts\/([0-9A-Za-z_-]{11})',
+        r'embed\/([0-9A-Za-z_-]{11})',
+        r'^([0-9A-Za-z_-]{11})$'
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, clean)
+        if match:
+            return match.group(1)
+    return None
+
+def fetch_youtube_metadata(video_id: str) -> Dict[str, Any]:
+    """Fetch official video title and channel details using YouTube oEmbed (no API key required)."""
+    oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+    req = urllib.request.Request(
+        oembed_url,
+        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as response:
+            if response.status == 200:
+                data = json.loads(response.read().decode("utf-8"))
+                return {
+                    "title": data.get("title", f"YouTube Video ({video_id})"),
+                    "channel_name": data.get("author_name", "YouTube Creator"),
+                    "channel_url": data.get("author_url", None),
+                    "provider": data.get("provider_name", "YouTube"),
+                    "thumbnail_url": data.get("thumbnail_url", f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg")
+                }
+    except Exception as e:
+        logger.warning(f"oEmbed fetch fallback for {video_id}: {e}")
+    
+    return {
+        "title": f"YouTube Video ({video_id})",
+        "channel_name": "YouTube Creator",
+        "channel_url": f"https://www.youtube.com/watch?v={video_id}",
+        "provider": "YouTube",
+        "thumbnail_url": f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+    }
+
+def fetch_youtube_thumbnail(video_id: str) -> Tuple[Image.Image, str]:
+    """Fetch the highest available resolution thumbnail directly from YouTube CDN."""
+    resolutions = [
+        f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg",
+        f"https://img.youtube.com/vi/{video_id}/sddefault.jpg",
+        f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg",
+    ]
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+
+    for url in resolutions:
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=6) as response:
+                if response.status == 200:
+                    data = response.read()
+                    # Some YouTube placeholders are 1x1 or < 2KB gray error thumbs
+                    if len(data) > 3000:
+                        img = Image.open(io.BytesIO(data))
+                        img.verify()
+                        img = Image.open(io.BytesIO(data))
+                        return img, url
+        except Exception:
+            continue
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Unable to download a valid thumbnail for YouTube Video ID '{video_id}'. The video may be private or unavailable."
+    )
+
+@app.post("/youtube/analyze", response_model=AnalysisResponse)
+async def analyze_youtube_video(req: YouTubeAnalyzeRequest):
+    """
+    Fetch live video metadata and highest-resolution thumbnail directly from YouTube,
+    then execute the full Attention & Heatmap pipeline.
+    """
+    video_id = extract_youtube_id(req.url)
+    if not video_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid YouTube link. Please provide a valid YouTube URL (e.g. https://www.youtube.com/watch?v=... or youtu.be/...)."
+        )
+
+    logger.info(f"Fetching real YouTube data for Video ID: {video_id}")
+    
+    # 1. Fetch metadata (Title, Channel, Author URL)
+    meta = fetch_youtube_metadata(video_id)
+    
+    # 2. Fetch real thumbnail image from YouTube CDN
+    image, thumb_url = fetch_youtube_thumbnail(video_id)
+    orig_w, orig_h = image.size
+
+    # 3. Resize if oversized
+    target_max = settings.max_dimension
+    if max(orig_w, orig_h) > target_max:
+        image.thumbnail((target_max, target_max), Image.Resampling.LANCZOS)
+
+    proc_w, proc_h = image.size
+
+    # 4. Convert original to base64 Data URI
+    orig_base64 = image_to_base64(image, format="JPEG")
+
+    # 5. Execute Attention Pipeline
+    cv_result = engine.run_pipeline(image)
+
+    # 6. Encode generated Heatmap Overlay to Base64
+    heatmap_base64 = cv_image_to_base64(cv_result["heatmap_bgr"])
+
+    youtube_payload = {
+        "video_id": video_id,
+        "title": meta["title"],
+        "channel_name": meta["channel_name"],
+        "channel_url": meta.get("channel_url"),
+        "thumbnail_url": thumb_url,
+        "youtube_url": f"https://www.youtube.com/watch?v={video_id}"
+    }
+
+    return AnalysisResponse(
+        success=True,
+        attention_score=cv_result["attention_score"],
+        score_label="Prototype Design Score",
+        image_metadata={
+            "filename": f"{video_id}.jpg",
+            "title": meta["title"],
+            "channel": meta["channel_name"],
+            "width": proc_w,
+            "height": proc_h,
+            "aspect_ratio": f"{proc_w}:{proc_h}",
+            "original_width": orig_w,
+            "original_height": orig_h,
+            "format": "JPEG"
+        },
+        original_image=orig_base64,
+        heatmap=heatmap_base64,
+        journey=cv_result["journey"],
+        regions=cv_result["regions"],
+        signals=cv_result["signals"],
+        recommendations=cv_result["recommendations"],
+        why_analysis=cv_result["why_analysis"],
+        pipeline_steps=cv_result["pipeline_steps"],
+        warnings=cv_result["warnings"],
+        scientific_disclaimer="Predicted visual attention, not real eye tracking.",
+        youtube_info=youtube_payload
+    )
+
 @app.post("/explain", response_model=ExplainResponse)
 async def explain_analysis(req: ExplainRequest):
     try:
         return await explainer.explain(req.analysis_data, req.title)
     except Exception as e:
         logger.error(f"Explanation error: {e}", exc_info=True)
-        # Fall back gracefully so UI never fails
         return explainer._rule_based_fallback(req.analysis_data, req.title)
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ import {
 
 interface HeroProps {
   onFileSelect: (file: File) => void;
+  onYouTubeSelect?: (url: string) => void;
   isAnalyzing: boolean;
   onExploreDemo: () => void;
   error?: string | null;
@@ -25,6 +26,7 @@ interface HeroProps {
 
 export function Hero({
   onFileSelect,
+  onYouTubeSelect,
   isAnalyzing,
   onExploreDemo,
   error,
@@ -32,6 +34,8 @@ export function Hero({
 }: HeroProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [inputMode, setInputMode] = useState<'upload' | 'youtube'>('upload');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
@@ -134,89 +138,199 @@ export function Hero({
             </div>
           </div>
 
-          {/* Clean Upload Dropzone Box */}
-          <div
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => !isAnalyzing && fileInputRef.current?.click()}
-            id="thumbnail-dropzone"
-            className={`relative rounded-3xl p-6 sm:p-7 text-center transition-all duration-300 border-2 border-dashed bg-white/95 dark:bg-slate-900/95 shadow-sm hover:shadow-md cursor-pointer ${
-              isDragOver
-                ? 'border-purple-500 bg-purple-50/80 dark:bg-purple-950/60 scale-[1.01]'
-                : isAnalyzing
-                ? 'border-purple-300 dark:border-purple-800 cursor-wait'
-                : 'border-slate-300/80 dark:border-slate-800 hover:border-purple-400'
-            }`}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".png,.jpg,.jpeg,.webp"
-              className="hidden"
-              onChange={handleFileInput}
-              disabled={isAnalyzing}
-            />
-
-            {isAnalyzing ? (
-              <div className="flex flex-col items-center justify-center space-y-3 py-3 animate-fade-in">
-                <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 flex items-center justify-center text-purple-600 animate-spin">
-                  <Loader2 className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-slate-900 dark:text-white">Analyzing visual attention…</h4>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">Computing heatmaps, gaze order, and contrast deltas</p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center space-y-3">
-                {/* Cloud icon inside purple square */}
-                <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/80 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                  <UploadCloud className="w-6 h-6" />
-                </div>
-
-                {/* Upload Callout */}
-                <div>
-                  <p className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
-                    Drag & drop thumbnail, or{' '}
-                    <span className="text-purple-600 dark:text-purple-400 hover:underline">
-                      Browse
-                    </span>
-                  </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-                    1280×720 PNG, JPG, WebP (Max 10MB)
-                  </p>
-                </div>
-
-                {/* Dual Buttons: Analyze Thumbnail + Interactive Demo */}
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      fileInputRef.current?.click();
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-purple-500/25 flex items-center space-x-1.5 transition-all hover:scale-[1.02] cursor-pointer"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Analyze Thumbnail</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onExploreDemo();
-                    }}
-                    className="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm shadow-xs flex items-center space-x-1.5 transition-all cursor-pointer"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-current text-slate-600 dark:text-slate-300" />
-                    <span>Interactive Demo</span>
-                  </button>
-                </div>
-              </div>
-            )}
+          {/* Input Method Segmented Control */}
+          <div className="flex items-center space-x-2 p-1 bg-slate-100/90 dark:bg-slate-800/90 rounded-2xl w-fit border border-slate-200/90 dark:border-slate-700/80 text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => setInputMode('upload')}
+              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                inputMode === 'upload'
+                  ? 'bg-white dark:bg-slate-900 text-purple-700 dark:text-purple-300 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <UploadCloud className="w-3.5 h-3.5" />
+              <span>Upload Image File</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setInputMode('youtube')}
+              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                inputMode === 'youtube'
+                  ? 'bg-white dark:bg-slate-900 text-red-600 dark:text-red-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <svg className="w-3.5 h-3.5 fill-current text-red-600" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              <span>Paste YouTube Link</span>
+              <span className="px-1.5 py-0.2 rounded-md bg-red-100 dark:bg-red-950/80 text-[10px] font-bold text-red-700 dark:text-red-300">
+                LIVE CDN
+              </span>
+            </button>
           </div>
+
+          {/* Clean Upload Dropzone Box OR YouTube URL Box */}
+          {inputMode === 'upload' ? (
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => !isAnalyzing && fileInputRef.current?.click()}
+              id="thumbnail-dropzone"
+              className={`relative rounded-3xl p-6 sm:p-7 text-center transition-all duration-300 border-2 border-dashed bg-white/95 dark:bg-slate-900/95 shadow-sm hover:shadow-md cursor-pointer ${
+                isDragOver
+                  ? 'border-purple-500 bg-purple-50/80 dark:bg-purple-950/60 scale-[1.01]'
+                  : isAnalyzing
+                  ? 'border-purple-300 dark:border-purple-800 cursor-wait'
+                  : 'border-slate-300/80 dark:border-slate-800 hover:border-purple-400'
+              }`}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".png,.jpg,.jpeg,.webp"
+                className="hidden"
+                onChange={handleFileInput}
+                disabled={isAnalyzing}
+              />
+
+              {isAnalyzing ? (
+                <div className="flex flex-col items-center justify-center space-y-3 py-3 animate-fade-in">
+                  <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 flex items-center justify-center text-purple-600 animate-spin">
+                    <Loader2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white">Analyzing visual attention…</h4>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">Computing heatmaps, gaze order, and contrast deltas</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/80 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                    <UploadCloud className="w-6 h-6" />
+                  </div>
+
+                  <div>
+                    <p className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
+                      Drag & drop thumbnail, or{' '}
+                      <span className="text-purple-600 dark:text-purple-400 hover:underline">
+                        Browse
+                      </span>
+                    </p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                      1280×720 PNG, JPG, WebP (Max 10MB)
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-purple-500/25 flex items-center space-x-1.5 transition-all hover:scale-[1.02] cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Analyze Thumbnail</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onExploreDemo();
+                      }}
+                      className="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm shadow-xs flex items-center space-x-1.5 transition-all cursor-pointer"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current text-slate-600 dark:text-slate-300" />
+                      <span>Interactive Demo</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* YouTube URL Live Analysis Card */
+            <div className="relative rounded-3xl p-6 sm:p-7 text-left transition-all duration-300 border-2 border-red-200 dark:border-red-950/80 bg-white/95 dark:bg-slate-900/95 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950/80 flex items-center justify-center text-red-600 shrink-0">
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">Fetch Live from YouTube</h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Pulls 1280x720 HD thumbnail, title & channel metadata</p>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300">
+                  Zero Quota / No API Key Needed
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && youtubeUrl.trim() && onYouTubeSelect) {
+                        onYouTubeSelect(youtubeUrl.trim());
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (youtubeUrl.trim() && onYouTubeSelect) {
+                        onYouTubeSelect(youtubeUrl.trim());
+                      }
+                    }}
+                    disabled={isAnalyzing || !youtubeUrl.trim()}
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-red-500/25 flex items-center space-x-1.5 transition-all disabled:opacity-50 cursor-pointer shrink-0"
+                  >
+                    {isAnalyzing ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4" />
+                    )}
+                    <span>{isAnalyzing ? 'Fetching...' : 'Analyze Video'}</span>
+                  </button>
+                </div>
+
+                {/* Quick 1-Click Popular Demo Chips */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  <span className="text-[11px] font-semibold text-slate-400">Quick Test:</span>
+                  {[
+                    { label: 'Rick Astley', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+                    { label: 'MrBeast ($500k)', url: 'https://www.youtube.com/watch?v=kX3nB4PpJko' },
+                    { label: 'Veritasium', url: 'https://www.youtube.com/watch?v=bHIhgxav9LY' },
+                  ].map((chip) => (
+                    <button
+                      key={chip.label}
+                      type="button"
+                      onClick={() => {
+                        setYoutubeUrl(chip.url);
+                        if (onYouTubeSelect) {
+                          onYouTubeSelect(chip.url);
+                        }
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-[11px] font-semibold text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
+                    >
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Bottom Gaze Sequence Bar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-4 py-2.5 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 backdrop-blur-md">

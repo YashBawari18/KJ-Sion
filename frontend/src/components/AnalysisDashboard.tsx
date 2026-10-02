@@ -41,7 +41,9 @@ export function AnalysisDashboard({
   onGoToBattle,
 }: AnalysisDashboardProps) {
   const [activeHeatmapMode, setActiveHeatmapMode] = useState<'thermal' | 'spectral' | 'contour' | 'gaze'>('thermal');
-  const [videoTitle, setVideoTitle] = useState<string>('I Tested The Most Powerful AI Laptop Ever Made!');
+  const [videoTitle, setVideoTitle] = useState<string>(
+    data.youtube_info?.title || data.image_metadata?.title || 'I Tested The Most Powerful AI Laptop Ever Made!'
+  );
 
   const originalImg = data.original_image;
   const heatmapImg = data.heatmap || data.original_image;
@@ -58,10 +60,10 @@ export function AnalysisDashboard({
   const colorDynamic = getPct(data.signals?.color, 84);
   const textContrast = getPct(data.signals?.contrast, 78);
 
-  // Title from filename or fallback
-  const displayTitle = data.image_metadata?.filename 
+  // Title from YouTube metadata, filename or fallback
+  const displayTitle = data.youtube_info?.title || (data.image_metadata?.filename 
     ? data.image_metadata.filename.replace(/\.[^/.]+$/, '').replace(/sample_/g, '').toUpperCase()
-    : 'AI IS HERE! THE FUTURE IS CRAZY!';
+    : 'AI IS HERE! THE FUTURE IS CRAZY!');
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-7 animate-fade-in pb-16">
@@ -88,13 +90,38 @@ export function AnalysisDashboard({
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Analysis Results
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Indian Tech Creator Campaign • 500ms Saliency Distribution Model
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 flex flex-wrap items-center gap-1.5">
+            {data.youtube_info ? (
+              <>
+                <span className="font-bold text-red-600 dark:text-red-400 flex items-center space-x-1">
+                  <span>●</span>
+                  <span>YouTube: {data.youtube_info.channel_name}</span>
+                </span>
+                <span>•</span>
+                <span>Live MaxRes CDN • 500ms Saliency Distribution</span>
+              </>
+            ) : (
+              <span>Creator Campaign • 500ms Saliency Distribution Model</span>
+            )}
           </p>
         </div>
 
         {/* Right Header Badges & Export Button */}
-        <div className="flex items-center space-x-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {data.youtube_info && (
+            <a
+              href={data.youtube_info.youtube_url || `https://www.youtube.com/watch?v=${data.youtube_info.video_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-red-50 dark:bg-red-950/70 border border-red-200 dark:border-red-800 text-xs font-bold text-red-700 dark:text-red-300 shadow-2xs hover:bg-red-100 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5 fill-current text-red-600" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              <span>View on YouTube</span>
+            </a>
+          )}
+
           <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-950/70 border border-purple-200 dark:border-purple-800 text-xs font-semibold text-purple-700 dark:text-purple-300 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse" />
             <span>Analyzed: 10M+ Video Saliency Weights</span>

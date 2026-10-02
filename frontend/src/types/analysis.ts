@@ -46,6 +46,17 @@ export interface ImageMetadata {
   original_width: number;
   original_height: number;
   format: string;
+  title?: string;
+  channel?: string;
+}
+
+export interface YouTubeVideoInfo {
+  video_id: string;
+  title: string;
+  channel_name: string;
+  channel_url?: string;
+  thumbnail_url: string;
+  youtube_url?: string;
 }
 
 export interface AnalysisResponse {
@@ -63,6 +74,7 @@ export interface AnalysisResponse {
   pipeline_steps: PipelineStepStatus[];
   warnings: string[];
   scientific_disclaimer: string;
+  youtube_info?: YouTubeVideoInfo;
 }
 
 export interface ExplainResponse {

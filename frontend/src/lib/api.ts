@@ -45,6 +45,29 @@ export async function uploadAndAnalyze(file: File): Promise<AnalysisResponse> {
   return await res.json();
 }
 
+export async function analyzeYouTubeUrl(youtubeUrl: string): Promise<AnalysisResponse> {
+  const res = await fetch(`${BACKEND_URL}/youtube/analyze`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: youtubeUrl }),
+  });
+
+  if (!res.ok) {
+    let errorDetail = 'Failed to fetch YouTube video data.';
+    try {
+      const errorJson = await res.json();
+      if (errorJson.detail) {
+        errorDetail = errorJson.detail;
+      }
+    } catch {
+      // response wasn't JSON
+    }
+    throw new Error(errorDetail);
+  }
+
+  return await res.json();
+}
+
 export async function requestExplanation(analysisData: AnalysisResponse, title?: string): Promise<ExplainResponse> {
   const res = await fetch(`${BACKEND_URL}/explain`, {
     method: 'POST',

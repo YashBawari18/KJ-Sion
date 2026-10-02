@@ -10,7 +10,7 @@ import { StandaloneCompareView } from '@/components/StandaloneCompareView';
 import { FeedBattleView } from '@/components/FeedBattleView';
 import { GuideView } from '@/components/GuideView';
 import { DisclaimerBanner } from '@/components/DisclaimerBanner';
-import { checkBackendHealth, uploadAndAnalyze, requestExplanation } from '@/lib/api';
+import { checkBackendHealth, uploadAndAnalyze, analyzeYouTubeUrl, requestExplanation } from '@/lib/api';
 import { AnalysisResponse, ExplainResponse } from '@/types/analysis';
 import { useLanguage } from '@/context/LanguageContext';
 import { AlertCircle, RefreshCw, ArrowRight, Eye, Sparkles } from 'lucide-react';
@@ -66,6 +66,23 @@ export default function Home() {
       handleRequestAiExplain(result);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Analysis failed. Please check backend connection.';
+      setError(msg);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleYouTubeSelect = async (youtubeUrl: string) => {
+    setIsAnalyzing(true);
+    setError(null);
+    setExplanation(null);
+    try {
+      const result = await analyzeYouTubeUrl(youtubeUrl);
+      setAnalysisResult(result);
+      setCurrentPage('results'); // Automatically navigate to results page
+      handleRequestAiExplain(result);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch and analyze YouTube video.';
       setError(msg);
     } finally {
       setIsAnalyzing(false);
@@ -171,6 +188,7 @@ export default function Home() {
             {/* Unified 2-Column Hero with Embedded Dropzone & Showcase Card */}
             <Hero
               onFileSelect={handleFileSelect}
+              onYouTubeSelect={handleYouTubeSelect}
               isAnalyzing={isAnalyzing}
               onExploreDemo={() => {
                 const el = document.getElementById('demo-thumbnails-section');

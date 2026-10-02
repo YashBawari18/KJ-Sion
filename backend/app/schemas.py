@@ -45,6 +45,10 @@ class AnalysisResponse(BaseModel):
     pipeline_steps: List[PipelineStepStatus] = []
     warnings: List[str] = []
     scientific_disclaimer: str = "Predicted visual attention, not real eye tracking."
+    youtube_info: Optional[Dict[str, Any]] = None
+
+class YouTubeAnalyzeRequest(BaseModel):
+    url: str = Field(..., description="YouTube video URL, youtu.be link, or video ID")
 
 class ExplainRequest(BaseModel):
     analysis_data: Dict[str, Any]
