@@ -81,33 +81,33 @@ body {
 @keyframes heat-spot-float-1 {
   0%, 100% {
     transform: translate(0px, 0px) scale(1);
-    opacity: 0.72;
+    opacity: 0.92;
   }
   50% {
-    transform: translate(35px, -25px) scale(1.18);
-    opacity: 0.95;
+    transform: translate(35px, -25px) scale(1.15);
+    opacity: 1;
   }
 }
 
 @keyframes heat-spot-float-2 {
   0%, 100% {
     transform: translate(0px, 0px) scale(1);
-    opacity: 0.65;
+    opacity: 0.88;
   }
   45% {
     transform: translate(-40px, 30px) scale(1.12);
-    opacity: 0.9;
+    opacity: 1;
   }
 }
 
 @keyframes heat-spot-float-3 {
   0%, 100% {
     transform: translate(0px, 0px) scale(1);
-    opacity: 0.68;
+    opacity: 0.9;
   }
   60% {
-    transform: translate(30px, 35px) scale(1.22);
-    opacity: 0.92;
+    transform: translate(30px, 35px) scale(1.18);
+    opacity: 1;
   }
 }
 

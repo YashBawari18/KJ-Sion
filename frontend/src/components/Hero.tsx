@@ -14,18 +14,19 @@ export function Hero({ onScrollToUpload, onExploreDemo }: HeroProps) {
 
   return (
     <section className="relative pt-6 pb-6 sm:pt-12 sm:pb-10 overflow-hidden">
-      {/* Dynamic Thermal Heatmap Hotspot directly behind the Hero */}
+      {/* High-Contrast Dynamic Thermal Heatmap Hotspot directly behind the Hero */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[580px] h-[320px] sm:h-[480px] rounded-full pointer-events-none -z-10 animate-heatspot-1"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] sm:w-[540px] h-[300px] sm:h-[440px] rounded-full pointer-events-none -z-10 animate-heatspot-1"
         style={{
           background:
-            'radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, rgba(249, 115, 22, 0.35) 26%, rgba(234, 179, 8, 0.22) 48%, rgba(16, 185, 129, 0.12) 68%, rgba(6, 182, 212, 0.05) 84%, transparent 100%)',
-          filter: 'blur(45px)',
+            'radial-gradient(circle, rgba(239, 68, 68, 0.82) 0%, rgba(249, 115, 22, 0.72) 24%, rgba(234, 179, 8, 0.56) 46%, rgba(16, 185, 129, 0.35) 66%, rgba(6, 182, 212, 0.16) 82%, transparent 100%)',
+          filter: 'blur(22px)',
         }}
       />
 
-      {/* Subtle Gaze Tracking Fixation Ring */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 h-48 sm:h-64 rounded-full border border-purple-400/20 dark:border-purple-500/20 pointer-events-none -z-10 animate-pulse" />
+      {/* Gaze Tracking Fixation Concentric Target Rings */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 sm:w-72 h-56 sm:h-72 rounded-full border border-red-500/30 dark:border-red-400/40 pointer-events-none -z-10 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 sm:w-36 h-28 sm:h-36 rounded-full border border-orange-500/35 dark:border-orange-400/45 pointer-events-none -z-10" />
 
       <div className="max-w-4xl mx-auto px-4 text-center">
         {/* Pill Tagline */}

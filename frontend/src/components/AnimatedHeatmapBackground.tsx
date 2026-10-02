@@ -18,31 +18,31 @@ export function AnimatedHeatmapBackground() {
       />
 
       {/* ===================================================================== */}
-      {/* REAL THERMAL HEATMAP FIXATION SPOTS (Concentric Gaussian Hotspots)     */}
-      {/* Red Core → Orange Mid → Yellow → Cyan / Green Halo → Transparent       */}
+      {/* HIGH-CONTRAST THERMAL HEATMAP FIXATION SPOTS (Concentric Hotspots)   */}
+      {/* Red Core → Orange Mid → Yellow → Cyan / Green Halo                    */}
       {/* ===================================================================== */}
 
-      {/* Heatmap Spot 1: Primary High-Fixation Hotspot (Hero Area) */}
+      {/* Heatmap Spot 1: Primary High-Fixation Hotspot (Hero Area / Top Left) */}
       <div
-        className="absolute top-12 left-1/4 -translate-x-1/2 w-[340px] sm:w-[480px] h-[340px] sm:h-[480px] rounded-full animate-heatspot-1"
+        className="absolute top-12 left-1/4 -translate-x-1/2 w-[340px] sm:w-[460px] h-[340px] sm:h-[460px] rounded-full animate-heatspot-1"
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(239, 68, 68, 0.42) 0%, rgba(249, 115, 22, 0.32) 28%, rgba(234, 179, 8, 0.22) 50%, rgba(16, 185, 129, 0.12) 68%, rgba(6, 182, 212, 0.04) 82%, transparent 100%)'
-              : 'radial-gradient(circle, rgba(239, 68, 68, 0.36) 0%, rgba(249, 115, 22, 0.28) 28%, rgba(234, 179, 8, 0.2) 50%, rgba(16, 185, 129, 0.1) 68%, rgba(6, 182, 212, 0.04) 82%, transparent 100%)',
-          filter: 'blur(35px)',
+              ? 'radial-gradient(circle, rgba(255, 50, 50, 0.95) 0%, rgba(255, 125, 20, 0.82) 24%, rgba(250, 204, 21, 0.65) 48%, rgba(52, 211, 153, 0.42) 68%, rgba(6, 182, 212, 0.18) 84%, transparent 100%)'
+              : 'radial-gradient(circle, rgba(239, 68, 68, 0.88) 0%, rgba(249, 115, 22, 0.78) 24%, rgba(234, 179, 8, 0.62) 46%, rgba(16, 185, 129, 0.4) 66%, rgba(6, 182, 212, 0.2) 84%, transparent 100%)',
+          filter: 'blur(20px)',
         }}
       />
 
       {/* Heatmap Spot 2: Secondary Fixation Hotspot (Top-Right / Beside Hero) */}
       <div
-        className="absolute top-24 -right-16 w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] rounded-full animate-heatspot-2"
+        className="absolute top-24 -right-12 w-[360px] sm:w-[480px] h-[360px] sm:h-[480px] rounded-full animate-heatspot-2"
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, rgba(234, 179, 8, 0.3) 30%, rgba(34, 197, 94, 0.18) 55%, rgba(14, 165, 233, 0.08) 75%, transparent 100%)'
-              : 'radial-gradient(circle, rgba(249, 115, 22, 0.34) 0%, rgba(234, 179, 8, 0.26) 30%, rgba(34, 197, 94, 0.14) 55%, rgba(14, 165, 233, 0.06) 75%, transparent 100%)',
-          filter: 'blur(40px)',
+              ? 'radial-gradient(circle, rgba(255, 125, 20, 0.92) 0%, rgba(250, 204, 21, 0.75) 28%, rgba(52, 211, 153, 0.52) 54%, rgba(14, 165, 233, 0.25) 76%, transparent 100%)'
+              : 'radial-gradient(circle, rgba(249, 115, 22, 0.86) 0%, rgba(234, 179, 8, 0.74) 28%, rgba(34, 197, 94, 0.52) 52%, rgba(14, 165, 233, 0.26) 75%, transparent 100%)',
+          filter: 'blur(22px)',
         }}
       />
 
@@ -52,21 +52,21 @@ export function AnimatedHeatmapBackground() {
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(244, 63, 94, 0.38) 0%, rgba(168, 85, 247, 0.26) 35%, rgba(6, 182, 212, 0.14) 65%, transparent 95%)'
-              : 'radial-gradient(circle, rgba(244, 63, 94, 0.3) 0%, rgba(168, 85, 247, 0.2) 35%, rgba(6, 182, 212, 0.1) 65%, transparent 95%)',
-          filter: 'blur(38px)',
+              ? 'radial-gradient(circle, rgba(244, 63, 94, 0.92) 0%, rgba(168, 85, 247, 0.72) 34%, rgba(6, 182, 212, 0.38) 64%, transparent 96%)'
+              : 'radial-gradient(circle, rgba(239, 68, 68, 0.82) 0%, rgba(244, 63, 94, 0.72) 28%, rgba(168, 85, 247, 0.5) 54%, rgba(6, 182, 212, 0.24) 78%, transparent 100%)',
+          filter: 'blur(22px)',
         }}
       />
 
       {/* Heatmap Spot 4: Lower-Left Attention Hotspot */}
       <div
-        className="absolute bottom-20 -left-16 w-[320px] sm:w-[440px] h-[320px] sm:h-[440px] rounded-full animate-heatspot-1"
+        className="absolute bottom-20 -left-12 w-[320px] sm:w-[440px] h-[320px] sm:h-[440px] rounded-full animate-heatspot-1"
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(239, 68, 68, 0.32) 0%, rgba(249, 115, 22, 0.24) 30%, rgba(234, 179, 8, 0.16) 55%, rgba(16, 185, 129, 0.08) 75%, transparent 100%)'
-              : 'radial-gradient(circle, rgba(239, 68, 68, 0.26) 0%, rgba(249, 115, 22, 0.2) 30%, rgba(234, 179, 8, 0.12) 55%, rgba(16, 185, 129, 0.06) 75%, transparent 100%)',
-          filter: 'blur(35px)',
+              ? 'radial-gradient(circle, rgba(255, 68, 68, 0.9) 0%, rgba(255, 125, 20, 0.75) 28%, rgba(250, 204, 21, 0.55) 52%, rgba(52, 211, 153, 0.3) 74%, transparent 100%)'
+              : 'radial-gradient(circle, rgba(239, 68, 68, 0.82) 0%, rgba(249, 115, 22, 0.7) 28%, rgba(234, 179, 8, 0.52) 52%, rgba(16, 185, 129, 0.3) 74%, transparent 100%)',
+          filter: 'blur(20px)',
         }}
       />
 
@@ -76,9 +76,9 @@ export function AnimatedHeatmapBackground() {
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(234, 179, 8, 0.3) 0%, rgba(16, 185, 129, 0.2) 40%, rgba(14, 165, 233, 0.1) 70%, transparent 95%)'
-              : 'radial-gradient(circle, rgba(234, 179, 8, 0.24) 0%, rgba(16, 185, 129, 0.16) 40%, rgba(14, 165, 233, 0.08) 70%, transparent 95%)',
-          filter: 'blur(35px)',
+              ? 'radial-gradient(circle, rgba(250, 204, 21, 0.9) 0%, rgba(52, 211, 153, 0.68) 38%, rgba(56, 189, 248, 0.35) 70%, transparent 96%)'
+              : 'radial-gradient(circle, rgba(234, 179, 8, 0.82) 0%, rgba(16, 185, 129, 0.62) 36%, rgba(14, 165, 233, 0.32) 68%, transparent 95%)',
+          filter: 'blur(20px)',
         }}
       />
 
@@ -90,8 +90,8 @@ export function AnimatedHeatmapBackground() {
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(139, 92, 246, 0.1) 45%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(233, 213, 255, 0.6) 0%, rgba(221, 214, 254, 0.4) 45%, transparent 70%)',
+              ? 'radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(139, 92, 246, 0.08) 45%, transparent 70%)'
+              : 'radial-gradient(circle, rgba(233, 213, 255, 0.35) 0%, rgba(221, 214, 254, 0.2) 45%, transparent 70%)',
           filter: 'blur(80px)',
         }}
       />
@@ -101,8 +101,8 @@ export function AnimatedHeatmapBackground() {
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(79, 70, 229, 0.1) 45%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(219, 234, 254, 0.65) 0%, rgba(224, 231, 255, 0.4) 45%, transparent 70%)',
+              ? 'radial-gradient(circle, rgba(59, 130, 246, 0.16) 0%, rgba(79, 70, 229, 0.08) 45%, transparent 70%)'
+              : 'radial-gradient(circle, rgba(219, 234, 254, 0.38) 0%, rgba(224, 231, 255, 0.22) 45%, transparent 70%)',
           filter: 'blur(85px)',
         }}
       />
