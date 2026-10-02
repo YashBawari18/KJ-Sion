@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AnalysisResponse, AttentionJourneyStep } from '@/types/analysis';
+import { AnalysisResponse, AttentionJourneyStep, ExplainResponse } from '@/types/analysis';
 import { AttentionScoreCard } from './AttentionScoreCard';
 import { AttentionJourneyCard } from './AttentionJourneyCard';
 import { WhyAnalysisCard } from './WhyAnalysisCard';
@@ -24,6 +24,7 @@ import {
 interface AnalysisDashboardProps {
   data: AnalysisResponse;
   onReset: () => void;
+  explanation?: ExplainResponse | null;
   onRequestAiExplain?: () => void;
   isLoadingAi?: boolean;
 }
@@ -31,6 +32,7 @@ interface AnalysisDashboardProps {
 export function AnalysisDashboard({
   data,
   onReset,
+  explanation,
   onRequestAiExplain,
   isLoadingAi,
 }: AnalysisDashboardProps) {
@@ -288,6 +290,7 @@ export function AnalysisDashboard({
 
         <RecommendationsCard
           recommendations={data.recommendations}
+          explanation={explanation}
           onRequestAiExplain={onRequestAiExplain}
           isLoadingAi={isLoadingAi}
         />

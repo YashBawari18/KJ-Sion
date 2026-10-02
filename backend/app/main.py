@@ -165,40 +165,18 @@ async def analyze_thumbnail(file: UploadFile = File(...)):
             detail="An error occurred while processing the thumbnail. Please try again or use another image."
         )
 
+from app.llm_explainer import explainer
+
 @app.post("/explain", response_model=ExplainResponse)
 async def explain_analysis(req: ExplainRequest):
-    # Rule-based fallback explanation
-    analysis = req.analysis_data
-    regions = analysis.get("regions", [])
-    signals = analysis.get("signals", {})
-
-    strongest = "Central focal subjectCommanding prominent first-look fixation."
-    second_strongest = "Supporting visual elements in adjacent composition quadrant."
-    if len(regions) > 0:
-        strongest = f"{regions[0].get('label', 'Primary Area')}: {regions[0].get('reason', '')}"
-    if len(regions) > 1:
-        second_strongest = f"{regions[1].get('label', 'Secondary Area')}: {regions[1].get('reason', '')}"
-
-    competing = (
-        "Clear hierarchy observed."
-        if len(regions) < 2 or (regions[0].get("share_percent", 50) > 55)
-        else "Competing visual weights detected between subject and secondary graphics. Consider increasing primary contrast."
-    )
-
-    return ExplainResponse(
-        success=True,
-        strongest_area=strongest,
-        second_strongest=second_strongest,
-        competing_elements=competing,
-        visual_hierarchy="Clear sequential scanning path from primary anchor to secondary copy.",
-        likely_distractions="Verify bottom-right corner is clear of YouTube's duration timestamp overlay.",
-        recommendations=analysis.get("recommendations", [
-            "Maintain strong contrast on key subject.",
-            "Test legibility on mobile feed card."
-        ]),
-        source="rule_based"
-    )
+    try:
+        return await explainer.explain(req.analysis_data, req.title)
+    except Exception as e:
+        logger.error(f"Explanation error: {e}", exc_info=True)
+        # Fall back gracefully so UI never fails
+        return explainer._rule_based_fallback(req.analysis_data, req.title)
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+

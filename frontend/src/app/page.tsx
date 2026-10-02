@@ -7,14 +7,16 @@ import { UploadDropzone } from '@/components/UploadDropzone';
 import { DemoSelector } from '@/components/DemoSelector';
 import { AnalysisDashboard } from '@/components/AnalysisDashboard';
 import { DisclaimerBanner } from '@/components/DisclaimerBanner';
-import { checkBackendHealth, uploadAndAnalyze } from '@/lib/api';
-import { AnalysisResponse } from '@/types/analysis';
+import { checkBackendHealth, uploadAndAnalyze, requestExplanation } from '@/lib/api';
+import { AnalysisResponse, ExplainResponse } from '@/types/analysis';
 import { AlertCircle, RefreshCw, Terminal, Sparkles, Heart } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'analyze' | 'demo'>('analyze');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResponse | null>(null);
+  const [explanation, setExplanation] = useState<ExplainResponse | null>(null);
+  const [isLoadingAi, setIsLoadingAi] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [backendHealthy, setBackendHealthy] = useState<boolean | null>(null);
   const [healthMessage, setHealthMessage] = useState<string>('');
@@ -36,12 +38,29 @@ export default function Home() {
     };
   }, []);
 
+  const handleRequestAiExplain = async (targetResult?: AnalysisResponse) => {
+    const dataToExplain = targetResult || analysisResult;
+    if (!dataToExplain) return;
+    setIsLoadingAi(true);
+    try {
+      const exp = await requestExplanation(dataToExplain);
+      setExplanation(exp);
+    } catch (err) {
+      console.warn('AI explanation request fallback:', err);
+    } finally {
+      setIsLoadingAi(false);
+    }
+  };
+
   const handleFileSelect = async (file: File) => {
     setIsAnalyzing(true);
     setError(null);
+    setExplanation(null);
     try {
       const result = await uploadAndAnalyze(file);
       setAnalysisResult(result);
+      // Auto-trigger explanation in background for seamless UX
+      handleRequestAiExplain(result);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Analysis failed. Please check backend connection.';
       setError(msg);
@@ -53,6 +72,7 @@ export default function Home() {
   const handleSelectSample = async (sampleId: string, imagePath: string) => {
     setIsAnalyzing(true);
     setError(null);
+    setExplanation(null);
     try {
       const res = await fetch(imagePath);
       if (!res.ok) throw new Error('Could not load sample thumbnail.');
@@ -60,6 +80,8 @@ export default function Home() {
       const file = new File([blob], `sample_${sampleId}.jpg`, { type: 'image/jpeg' });
       const result = await uploadAndAnalyze(file);
       setAnalysisResult(result);
+      // Auto-trigger explanation
+      handleRequestAiExplain(result);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to analyze sample image.';
       setError(msg);
@@ -70,6 +92,7 @@ export default function Home() {
 
   const handleReset = () => {
     setAnalysisResult(null);
+    setExplanation(null);
     setError(null);
   };
 
@@ -163,6 +186,9 @@ export default function Home() {
           <AnalysisDashboard
             data={analysisResult}
             onReset={handleReset}
+            explanation={explanation}
+            onRequestAiExplain={handleRequestAiExplain}
+            isLoadingAi={isLoadingAi}
           />
         )}
       </main>
