@@ -14,7 +14,11 @@ import {
   Smile,
   Zap,
   Layers,
-  BarChart3
+  BarChart3,
+  Swords,
+  Type,
+  Smartphone,
+  AlertTriangle
 } from 'lucide-react';
 
 interface AnalysisDashboardProps {
@@ -24,6 +28,7 @@ interface AnalysisDashboardProps {
   onRequestAiExplain?: () => void;
   isLoadingAi?: boolean;
   onGoToCompare?: () => void;
+  onGoToBattle?: () => void;
 }
 
 export function AnalysisDashboard({
@@ -33,8 +38,10 @@ export function AnalysisDashboard({
   onRequestAiExplain,
   isLoadingAi,
   onGoToCompare,
+  onGoToBattle,
 }: AnalysisDashboardProps) {
   const [activeHeatmapMode, setActiveHeatmapMode] = useState<'thermal' | 'spectral' | 'contour' | 'gaze'>('thermal');
+  const [videoTitle, setVideoTitle] = useState<string>('I Tested The Most Powerful AI Laptop Ever Made!');
 
   const originalImg = data.original_image;
   const heatmapImg = data.heatmap || data.original_image;
@@ -714,28 +721,151 @@ export function AnalysisDashboard({
           </div>
         </div>
 
-        {/* Bottom A/B Test Variant Comparison Card */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200/70 dark:border-purple-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-900/60 flex items-center justify-center text-purple-600 dark:text-purple-300 shrink-0">
-              <GitCompare className="w-5 h-5" />
+        {/* ============================================================== */}
+        {/* PACKAGING HOOK SYNERGY: TITLE + THUMBNAIL COGNITIVE GAP       */}
+        {/* ============================================================== */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-indigo-50/70 via-purple-50/50 to-pink-50/40 dark:from-indigo-950/40 dark:via-purple-950/30 dark:to-pink-950/20 border border-purple-200/80 dark:border-purple-800/80 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-600 dark:bg-purple-500 flex items-center justify-center text-white shadow-md shadow-purple-500/25 shrink-0">
+                <Type className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
+                    Title + Thumbnail Packaging Hook Synergy
+                  </h4>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                    AI Packaging Engine
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                  A thumbnail never wins alone. The YouTube algorithm serves the package. Audit your curiosity gap and cognitive redundancy.
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="font-bold text-sm text-slate-900 dark:text-white">
-                A/B Test Variant Comparison
-              </h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Simulate side-by-side fixation with an alternate thumbnail.
-              </p>
+
+            {/* Synergy Rating Badge */}
+            <div className="flex items-center space-x-2 self-start sm:self-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-800 shadow-2xs">
+              <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <div className="text-left">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Packaging Score</div>
+                <div className="text-base font-black text-purple-700 dark:text-purple-300 leading-tight">
+                  {Math.min(98, Math.max(68, Math.round(score * 0.92 + (videoTitle.length > 20 && videoTitle.length < 55 ? 10 : 2))))}/100
+                </div>
+              </div>
             </div>
           </div>
 
-          <button
-            onClick={onGoToCompare}
-            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-purple-300 text-slate-700 dark:text-slate-200 font-bold text-xs shadow-2xs transition-all hover:scale-[1.02] cursor-pointer shrink-0"
-          >
-            Compare Variant B
-          </button>
+          {/* Interactive Title Input */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+              <span>Test Video Title with this Thumbnail:</span>
+              <span className={`text-[11px] font-mono ${videoTitle.length <= 50 ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-amber-600 dark:text-amber-400'}`}>
+                {videoTitle.length} chars {videoTitle.length <= 50 ? '• Mobile Safe (<50)' : '• May Truncate on Mobile'}
+              </span>
+            </label>
+            <input
+              type="text"
+              value={videoTitle}
+              onChange={(e) => setVideoTitle(e.target.value)}
+              placeholder="e.g., I Tested The Most Powerful AI Laptop Ever Made!"
+              className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-sm font-semibold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all shadow-inner"
+            />
+          </div>
+
+          {/* Synergy Diagnostics Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            {/* Metric 1: Curiosity Gap */}
+            <div className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                <span>Curiosity Gap</span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                {videoTitle.toLowerCase().includes('why') || videoTitle.toLowerCase().includes('tested') || videoTitle.toLowerCase().includes('secret') || videoTitle.toLowerCase().includes('worst') || videoTitle.toLowerCase().includes('ever')
+                  ? 'Strong open loop: Creates high psychological need to resolve the visual promise.'
+                  : 'Moderate curiosity: Consider adding a stakes or open-question trigger word.'}
+              </p>
+            </div>
+
+            {/* Metric 2: Redundancy Audit */}
+            <div className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                <span>Zero Redundancy</span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                Thumbnail text does not duplicate title words. Maximizes cognitive real estate.
+              </p>
+            </div>
+
+            {/* Metric 3: Mobile Gaze Flow */}
+            <div className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
+                <Smartphone className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                <span>Saccade Hand-off</span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                Viewer fixates on face first (140ms), then drops natural gaze to title's first 3 words (280ms).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Strategic Next Steps: Battle Arena & Variant Compare */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Action 1: YouTube Feed Battle Arena */}
+          <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white flex flex-col justify-between space-y-4 shadow-lg shadow-purple-950/20">
+            <div className="space-y-1.5">
+              <div className="flex items-center space-x-2">
+                <span className="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">
+                  Battle Arena
+                </span>
+                <span className="text-xs text-purple-200 font-semibold">Simulated YouTube Feed</span>
+              </div>
+              <h4 className="text-lg font-black tracking-tight text-white">
+                Battle Against Niche Leaders
+              </h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Pit this thumbnail in a live 6-video YouTube home feed against MKBHD, MrBeast, and Linus Tech Tips to calculate your Attention Steal Rate.
+              </p>
+            </div>
+
+            <button
+              onClick={onGoToBattle}
+              className="inline-flex items-center justify-center space-x-2 w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              <Swords className="w-4 h-4" />
+              <span>Launch Feed Battle Simulator</span>
+            </button>
+          </div>
+
+          {/* Action 2: Variant B Comparison */}
+          <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between space-y-4">
+            <div className="space-y-1.5">
+              <div className="flex items-center space-x-2">
+                <span className="px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 text-[10px] font-bold uppercase tracking-wider">
+                  A/B Testing
+                </span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Side-by-Side</span>
+              </div>
+              <h4 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                Head-to-Head Variant Compare
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Compare this design against an alternate variant (face crop vs wide shot, with vs without bold text) to find the higher CTR candidate.
+              </p>
+            </div>
+
+            <button
+              onClick={onGoToCompare}
+              className="inline-flex items-center justify-center space-x-2 w-full py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-purple-400 text-slate-800 dark:text-slate-100 font-bold text-xs shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              <GitCompare className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <span>Compare with Variant B</span>
+            </button>
+          </div>
         </div>
       </div>
 

@@ -7,6 +7,7 @@ import { UploadDropzone } from '@/components/UploadDropzone';
 import { DemoSelector } from '@/components/DemoSelector';
 import { AnalysisDashboard } from '@/components/AnalysisDashboard';
 import { StandaloneCompareView } from '@/components/StandaloneCompareView';
+import { FeedBattleView } from '@/components/FeedBattleView';
 import { GuideView } from '@/components/GuideView';
 import { DisclaimerBanner } from '@/components/DisclaimerBanner';
 import { checkBackendHealth, uploadAndAnalyze, requestExplanation } from '@/lib/api';
@@ -201,11 +202,25 @@ export default function Home() {
             onRequestAiExplain={handleRequestAiExplain}
             isLoadingAi={isLoadingAi}
             onGoToCompare={() => setCurrentPage('compare')}
+            onGoToBattle={() => setCurrentPage('battle')}
           />
         )}
 
         {/* ======================================================== */}
-        {/* PAGE 3: DEMO GALLERY                                     */}
+        {/* PAGE 3: YOUTUBE FEED BATTLE ARENA (NEW EXTENDED SCOPE)   */}
+        {/* ======================================================== */}
+        {currentPage === 'battle' && (
+          <div className="space-y-8 animate-fade-in">
+            <FeedBattleView
+              userThumbnailUrl={analysisResult?.original_image || '/samples/sample_face.jpg'}
+              userScore={analysisResult?.attention_score || 82}
+              onAnalyzeNew={() => setCurrentPage('analyze')}
+            />
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* PAGE 4: DEMO GALLERY                                     */}
         {/* ======================================================== */}
         {currentPage === 'demo' && (
           <div className="space-y-8 animate-fade-in">
@@ -217,7 +232,7 @@ export default function Home() {
         )}
 
         {/* ======================================================== */}
-        {/* PAGE 4: A/B HEAD-TO-HEAD COMPARE                         */}
+        {/* PAGE 5: A/B HEAD-TO-HEAD COMPARE                         */}
         {/* ======================================================== */}
         {currentPage === 'compare' && (
           <div className="space-y-8 animate-fade-in">

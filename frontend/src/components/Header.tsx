@@ -5,7 +5,7 @@ import { Eye, Sun, Moon, Plus } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 
-export type MainNavPage = 'analyze' | 'demo' | 'compare' | 'guide' | 'results';
+export type MainNavPage = 'analyze' | 'demo' | 'compare' | 'battle' | 'guide' | 'results';
 
 interface HeaderProps {
   activeTab: MainNavPage;
@@ -72,15 +72,18 @@ export function Header({ activeTab, setActiveTab, hasResult, onNewAnalysis }: He
           )}
 
           <button
-            onClick={() => setActiveTab('demo')}
-            className={`py-1.5 transition-all cursor-pointer relative ${
-              activeTab === 'demo'
+            onClick={() => setActiveTab('battle')}
+            className={`py-1.5 transition-all cursor-pointer relative flex items-center space-x-1.5 ${
+              activeTab === 'battle'
                 ? 'text-purple-700 dark:text-purple-300 font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <span>Demo</span>
-            {activeTab === 'demo' && (
+            <span>Feed Battle</span>
+            <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-300/60">
+              NEW
+            </span>
+            {activeTab === 'battle' && (
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400 rounded-full" />
             )}
           </button>
@@ -100,14 +103,28 @@ export function Header({ activeTab, setActiveTab, hasResult, onNewAnalysis }: He
           </button>
 
           <button
-            onClick={() => setActiveTab('guide')}
+            onClick={() => setActiveTab('demo')}
             className={`py-1.5 transition-all cursor-pointer relative ${
+              activeTab === 'demo'
+                ? 'text-purple-700 dark:text-purple-300 font-bold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <span>Demo</span>
+            {activeTab === 'demo' && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400 rounded-full" />
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('guide')}
+            className={`py-1.5 transition-all cursor-pointer relative flex items-center space-x-1 ${
               activeTab === 'guide'
                 ? 'text-purple-700 dark:text-purple-300 font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <span>Docs</span>
+            <span>Methodology & Math</span>
             {activeTab === 'guide' && (
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400 rounded-full" />
             )}
@@ -159,38 +176,44 @@ export function Header({ activeTab, setActiveTab, hasResult, onNewAnalysis }: He
       </div>
 
       {/* Mobile Sub-Navigation Bar */}
-      <div className="flex md:hidden items-center justify-around border-t border-slate-200/60 dark:border-slate-800/80 px-2 py-1.5 bg-slate-50/90 dark:bg-slate-900/90 text-xs font-semibold">
+      <div className="flex md:hidden items-center justify-around border-t border-slate-200/60 dark:border-slate-800/80 px-2 py-1.5 bg-slate-50/90 dark:bg-slate-900/90 text-xs font-semibold overflow-x-auto">
         <button
           onClick={() => setActiveTab('analyze')}
-          className={`px-3 py-1 rounded-lg ${activeTab === 'analyze' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+          className={`px-2.5 py-1 rounded-lg shrink-0 ${activeTab === 'analyze' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
         >
           Analyze
         </button>
         {hasResult && (
           <button
             onClick={() => setActiveTab('results')}
-            className={`px-3 py-1 rounded-lg ${activeTab === 'results' ? 'bg-purple-600 text-white' : 'text-purple-600'}`}
+            className={`px-2.5 py-1 rounded-lg shrink-0 ${activeTab === 'results' ? 'bg-purple-600 text-white' : 'text-purple-600'}`}
           >
             Results
           </button>
         )}
         <button
-          onClick={() => setActiveTab('demo')}
-          className={`px-3 py-1 rounded-lg ${activeTab === 'demo' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+          onClick={() => setActiveTab('battle')}
+          className={`px-2.5 py-1 rounded-lg shrink-0 ${activeTab === 'battle' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
         >
-          Demo
+          Battle
         </button>
         <button
           onClick={() => setActiveTab('compare')}
-          className={`px-3 py-1 rounded-lg ${activeTab === 'compare' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+          className={`px-2.5 py-1 rounded-lg shrink-0 ${activeTab === 'compare' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
         >
           Compare
         </button>
         <button
-          onClick={() => setActiveTab('guide')}
-          className={`px-3 py-1 rounded-lg ${activeTab === 'guide' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+          onClick={() => setActiveTab('demo')}
+          className={`px-2.5 py-1 rounded-lg shrink-0 ${activeTab === 'demo' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
         >
-          Docs
+          Demo
+        </button>
+        <button
+          onClick={() => setActiveTab('guide')}
+          className={`px-2.5 py-1 rounded-lg shrink-0 ${activeTab === 'guide' ? 'bg-purple-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+        >
+          Math & Logic
         </button>
       </div>
     </header>
