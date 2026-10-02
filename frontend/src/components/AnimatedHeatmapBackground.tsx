@@ -8,64 +8,106 @@ export function AnimatedHeatmapBackground() {
 
   return (
     <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden transition-colors duration-500">
-      {/* Subtle Grid Pattern Overlay */}
+      {/* 1. Subtle Engineering Grid Overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+        className="absolute inset-0 opacity-[0.035] dark:opacity-[0.05]"
         style={{
           backgroundImage: `radial-gradient(currentColor 1px, transparent 1px)`,
           backgroundSize: '32px 32px',
         }}
       />
 
-      {/* 1. Purple / Violet Heatmap Blob */}
+      {/* ===================================================================== */}
+      {/* REAL THERMAL HEATMAP FIXATION SPOTS (Concentric Gaussian Hotspots)     */}
+      {/* Red Core → Orange Mid → Yellow → Cyan / Green Halo → Transparent       */}
+      {/* ===================================================================== */}
+
+      {/* Heatmap Spot 1: Primary High-Fixation Hotspot (Hero Area) */}
       <div
-        className="absolute -top-20 -left-20 w-[450px] sm:w-[650px] h-[450px] sm:h-[650px] rounded-full animate-blob-1"
+        className="absolute top-12 left-1/4 -translate-x-1/2 w-[340px] sm:w-[480px] h-[340px] sm:h-[480px] rounded-full animate-heatspot-1"
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, rgba(139, 92, 246, 0.15) 45%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(233, 213, 255, 0.75) 0%, rgba(221, 214, 254, 0.5) 45%, transparent 70%)',
-          filter: 'blur(70px)',
+              ? 'radial-gradient(circle, rgba(239, 68, 68, 0.42) 0%, rgba(249, 115, 22, 0.32) 28%, rgba(234, 179, 8, 0.22) 50%, rgba(16, 185, 129, 0.12) 68%, rgba(6, 182, 212, 0.04) 82%, transparent 100%)'
+              : 'radial-gradient(circle, rgba(239, 68, 68, 0.36) 0%, rgba(249, 115, 22, 0.28) 28%, rgba(234, 179, 8, 0.2) 50%, rgba(16, 185, 129, 0.1) 68%, rgba(6, 182, 212, 0.04) 82%, transparent 100%)',
+          filter: 'blur(35px)',
         }}
       />
 
-      {/* 2. Blue / Indigo Saliency Blob */}
+      {/* Heatmap Spot 2: Secondary Fixation Hotspot (Top-Right / Beside Hero) */}
       <div
-        className="absolute top-1/4 -right-24 w-[480px] sm:w-[680px] h-[480px] sm:h-[680px] rounded-full animate-blob-2"
+        className="absolute top-24 -right-16 w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] rounded-full animate-heatspot-2"
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(59, 130, 246, 0.22) 0%, rgba(79, 70, 229, 0.15) 45%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(219, 234, 254, 0.8) 0%, rgba(224, 231, 255, 0.55) 45%, transparent 70%)',
+              ? 'radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, rgba(234, 179, 8, 0.3) 30%, rgba(34, 197, 94, 0.18) 55%, rgba(14, 165, 233, 0.08) 75%, transparent 100%)'
+              : 'radial-gradient(circle, rgba(249, 115, 22, 0.34) 0%, rgba(234, 179, 8, 0.26) 30%, rgba(34, 197, 94, 0.14) 55%, rgba(14, 165, 233, 0.06) 75%, transparent 100%)',
+          filter: 'blur(40px)',
+        }}
+      />
+
+      {/* Heatmap Spot 3: Focus Blooming Hotspot (Center / Behind Upload Zone) */}
+      <div
+        className="absolute top-[480px] left-1/2 -translate-x-1/2 w-[320px] sm:w-[460px] h-[320px] sm:h-[460px] rounded-full animate-heatspot-3"
+        style={{
+          background:
+            theme === 'dark'
+              ? 'radial-gradient(circle, rgba(244, 63, 94, 0.38) 0%, rgba(168, 85, 247, 0.26) 35%, rgba(6, 182, 212, 0.14) 65%, transparent 95%)'
+              : 'radial-gradient(circle, rgba(244, 63, 94, 0.3) 0%, rgba(168, 85, 247, 0.2) 35%, rgba(6, 182, 212, 0.1) 65%, transparent 95%)',
+          filter: 'blur(38px)',
+        }}
+      />
+
+      {/* Heatmap Spot 4: Lower-Left Attention Hotspot */}
+      <div
+        className="absolute bottom-20 -left-16 w-[320px] sm:w-[440px] h-[320px] sm:h-[440px] rounded-full animate-heatspot-1"
+        style={{
+          background:
+            theme === 'dark'
+              ? 'radial-gradient(circle, rgba(239, 68, 68, 0.32) 0%, rgba(249, 115, 22, 0.24) 30%, rgba(234, 179, 8, 0.16) 55%, rgba(16, 185, 129, 0.08) 75%, transparent 100%)'
+              : 'radial-gradient(circle, rgba(239, 68, 68, 0.26) 0%, rgba(249, 115, 22, 0.2) 30%, rgba(234, 179, 8, 0.12) 55%, rgba(16, 185, 129, 0.06) 75%, transparent 100%)',
+          filter: 'blur(35px)',
+        }}
+      />
+
+      {/* Heatmap Spot 5: Lower-Right Peripheral Hotspot */}
+      <div
+        className="absolute -bottom-10 right-1/4 w-[300px] sm:w-[420px] h-[300px] sm:h-[420px] rounded-full animate-heatspot-2"
+        style={{
+          background:
+            theme === 'dark'
+              ? 'radial-gradient(circle, rgba(234, 179, 8, 0.3) 0%, rgba(16, 185, 129, 0.2) 40%, rgba(14, 165, 233, 0.1) 70%, transparent 95%)'
+              : 'radial-gradient(circle, rgba(234, 179, 8, 0.24) 0%, rgba(16, 185, 129, 0.16) 40%, rgba(14, 165, 233, 0.08) 70%, transparent 95%)',
+          filter: 'blur(35px)',
+        }}
+      />
+
+      {/* ===================================================================== */}
+      {/* AMBIENT DIFFUSED LAVENDER / PURPLE / CYAN GLOWS                       */}
+      {/* ===================================================================== */}
+      <div
+        className="absolute -top-32 -left-32 w-[550px] sm:w-[750px] h-[550px] sm:h-[750px] rounded-full animate-blob-1"
+        style={{
+          background:
+            theme === 'dark'
+              ? 'radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(139, 92, 246, 0.1) 45%, transparent 70%)'
+              : 'radial-gradient(circle, rgba(233, 213, 255, 0.6) 0%, rgba(221, 214, 254, 0.4) 45%, transparent 70%)',
           filter: 'blur(80px)',
         }}
       />
 
-      {/* 3. Pink / Rose Fixation Hotspot Blob */}
       <div
-        className="absolute -bottom-24 left-1/4 w-[420px] sm:w-[580px] h-[420px] sm:h-[580px] rounded-full animate-blob-3"
+        className="absolute top-1/3 -right-32 w-[550px] sm:w-[750px] h-[550px] sm:h-[750px] rounded-full animate-blob-2"
         style={{
           background:
             theme === 'dark'
-              ? 'radial-gradient(circle, rgba(244, 63, 94, 0.2) 0%, rgba(236, 72, 153, 0.12) 45%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(255, 228, 230, 0.75) 0%, rgba(252, 231, 243, 0.5) 45%, transparent 70%)',
-          filter: 'blur(75px)',
+              ? 'radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(79, 70, 229, 0.1) 45%, transparent 70%)'
+              : 'radial-gradient(circle, rgba(219, 234, 254, 0.65) 0%, rgba(224, 231, 255, 0.4) 45%, transparent 70%)',
+          filter: 'blur(85px)',
         }}
       />
 
-      {/* 4. Cyan / Azure Ambient Glow */}
-      <div
-        className="absolute top-2/3 -left-28 w-[380px] sm:w-[520px] h-[380px] sm:h-[520px] rounded-full animate-blob-1"
-        style={{
-          background:
-            theme === 'dark'
-              ? 'radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, rgba(14, 165, 233, 0.1) 50%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(207, 250, 254, 0.7) 0%, rgba(224, 242, 254, 0.45) 50%, transparent 70%)',
-          filter: 'blur(70px)',
-        }}
-      />
-
-      {/* Soft Vignette Edge Shadow */}
+      {/* Subtle Vignette Edge Shadow */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-900/5 dark:to-black/30" />
     </div>
   );

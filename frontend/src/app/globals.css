@@ -20,7 +20,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Heatmap Blob Transitions: Purple → Blue → Pink → Cyan */
+/* Ambient Diffused Blob Animations */
 @keyframes bob-float-1 {
   0%, 100% {
     transform: translate(0px, 0px) scale(1) rotate(0deg);
@@ -75,6 +75,52 @@ body {
 
 .animate-blob-3 {
   animation: bob-float-3 18s ease-in-out infinite, pulse-glow 11s ease-in-out infinite alternate;
+}
+
+/* Distinct Eye-Tracking Heatmap Spot Animations */
+@keyframes heat-spot-float-1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translate(35px, -25px) scale(1.18);
+    opacity: 0.95;
+  }
+}
+
+@keyframes heat-spot-float-2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.65;
+  }
+  45% {
+    transform: translate(-40px, 30px) scale(1.12);
+    opacity: 0.9;
+  }
+}
+
+@keyframes heat-spot-float-3 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.68;
+  }
+  60% {
+    transform: translate(30px, 35px) scale(1.22);
+    opacity: 0.92;
+  }
+}
+
+.animate-heatspot-1 {
+  animation: heat-spot-float-1 9s ease-in-out infinite alternate;
+}
+
+.animate-heatspot-2 {
+  animation: heat-spot-float-2 11s ease-in-out infinite alternate;
+}
+
+.animate-heatspot-3 {
+  animation: heat-spot-float-3 10s ease-in-out infinite alternate;
 }
 
 /* Glassmorphism utility */

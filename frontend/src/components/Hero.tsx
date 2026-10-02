@@ -14,8 +14,18 @@ export function Hero({ onScrollToUpload, onExploreDemo }: HeroProps) {
 
   return (
     <section className="relative pt-6 pb-6 sm:pt-12 sm:pb-10 overflow-hidden">
-      {/* Subtle glowing blob behind hero */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] h-[250px] sm:h-[350px] bg-gradient-to-r from-purple-400/20 via-pink-400/20 to-blue-400/20 rounded-full blur-3xl pointer-events-none -z-10" />
+      {/* Dynamic Thermal Heatmap Hotspot directly behind the Hero */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[580px] h-[320px] sm:h-[480px] rounded-full pointer-events-none -z-10 animate-heatspot-1"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, rgba(249, 115, 22, 0.35) 26%, rgba(234, 179, 8, 0.22) 48%, rgba(16, 185, 129, 0.12) 68%, rgba(6, 182, 212, 0.05) 84%, transparent 100%)',
+          filter: 'blur(45px)',
+        }}
+      />
+
+      {/* Subtle Gaze Tracking Fixation Ring */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 h-48 sm:h-64 rounded-full border border-purple-400/20 dark:border-purple-500/20 pointer-events-none -z-10 animate-pulse" />
 
       <div className="max-w-4xl mx-auto px-4 text-center">
         {/* Pill Tagline */}
