@@ -22,7 +22,15 @@ class AttentionFusionEngine:
         # Load OpenCV Haar Cascades for faces
         self.face_cascade = None
         self.profile_cascade = None
+        self.yunet_path = None
         try:
+            import os
+            # Check for YuNet deep learning ONNX model
+            model_p = os.path.join(os.path.dirname(__file__), "models", "face_detection_yunet_2023mar.onnx")
+            if os.path.exists(model_p) and hasattr(cv2, "FaceDetectorYN"):
+                self.yunet_path = model_p
+                logger.info(f"OpenCV YuNet Deep Learning Model loaded from: {model_p}")
+
             cascade_dir = cv2.data.haarcascades
             face_xml = cascade_dir + "haarcascade_frontalface_default.xml"
             profile_xml = cascade_dir + "haarcascade_profileface.xml"
@@ -30,7 +38,7 @@ class AttentionFusionEngine:
             self.profile_cascade = cv2.CascadeClassifier(profile_xml)
             logger.info("Haar Cascades loaded successfully.")
         except Exception as e:
-            logger.warning(f"Failed to load Haar cascades: {e}. Skin-tone and contrast fallbacks will activate.")
+            logger.warning(f"Failed to load detectors: {e}. Skin-tone and contrast fallbacks will activate.")
 
     def run_pipeline(self, pil_image: Image.Image) -> Dict[str, Any]:
         """
@@ -289,7 +297,21 @@ class AttentionFusionEngine:
 
         boxes: List[List[int]] = []
 
-        if self.face_cascade:
+        # 1. Tier 1: YuNet Deep Learning Neural Network
+        if hasattr(self, 'yunet_path') and self.yunet_path:
+            try:
+                yunet = cv2.FaceDetectorYN.create(self.yunet_path, "", (w, h), score_threshold=0.55)
+                ret, y_faces = yunet.detect(bgr)
+                if ret and y_faces is not None:
+                    for f in y_faces:
+                        fx, fy, fw, fh = int(f[0]), int(f[1]), int(f[2]), int(f[3])
+                        if fw > (w * 0.05) and fh > (h * 0.05):
+                            boxes.append([fx, fy, fw, fh])
+            except Exception as e:
+                logger.debug(f"YuNet inference fallback: {e}")
+
+        # 2. Tier 2: Haar Cascades
+        if len(boxes) == 0 and self.face_cascade:
             faces = self.face_cascade.detectMultiScale(
                 gray,
                 scaleFactor=1.1,
