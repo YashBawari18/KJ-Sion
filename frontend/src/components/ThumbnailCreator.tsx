@@ -292,6 +292,8 @@ export function ThumbnailCreator({ onAnalyzeThumbnail }: ThumbnailCreatorProps) 
         body: JSON.stringify({
           prompt: textToUse,
           style: styleOverride || selectedStyle,
+          seed: Math.floor(Math.random() * 100000000),
+          t: Date.now(),
         }),
       });
 
