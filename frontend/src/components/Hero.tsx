@@ -19,7 +19,8 @@ import {
   Compass,
   RotateCcw,
   Smartphone,
-  EyeOff
+  EyeOff,
+  CheckCircle2
 } from 'lucide-react';
 
 import { useLanguage } from '@/context/LanguageContext';
@@ -33,6 +34,95 @@ interface HeroProps {
   error?: string | null;
   onClearError?: () => void;
 }
+
+type SampleKey = 'face' | 'product' | 'text';
+
+const SAMPLES_DATA = {
+  face: {
+    id: 'face' as SampleKey,
+    label: 'Face & Expression',
+    icon: '😀',
+    src: '/samples/sample_face.jpg',
+    badgeText: 'Face Saliency Anchor',
+    ctr: '9.8%',
+    clarityScore: 94,
+    blobs: [
+      { top: '28%', left: '78%', width: '130px', height: '130px', bg: 'radial-gradient(circle, rgba(239, 68, 68, 0.9) 0%, rgba(249, 115, 22, 0.7) 35%, rgba(234, 179, 8, 0.45) 60%, transparent 80%)', blur: '14px' },
+      { top: '28%', left: '28%', width: '100px', height: '80px', bg: 'radial-gradient(ellipse, rgba(234, 179, 8, 0.75) 0%, rgba(249, 115, 22, 0.45) 45%, transparent 75%)', blur: '10px' }
+    ],
+    path1: 'M 78 15.75 C 60 10, 46 10, 28 18',
+    path2: 'M 28 18 C 30 28, 40 32, 52 39.38',
+    pins: [
+      { id: 1, top: '28%', left: '78%', label: 'Fixation #1 · Face Anchor', time: '0–150ms', colorBg: 'bg-red-600', ringColor: 'ring-red-500/40', textColor: 'text-red-400', borderColor: 'border-red-500/60', desc: 'Biological face recognition triggers instant primary gaze focus (94% weight).' },
+      { id: 2, top: '28%', left: '28%', label: 'Fixation #2 · Headline Text', time: '150–320ms', colorBg: 'bg-amber-500', ringColor: 'ring-amber-400/40', textColor: 'text-amber-400', borderColor: 'border-amber-500/60', desc: 'Saccade moves to bold typography driven by luminance contrast (88% dwell).' },
+      { id: 3, top: '70%', left: '52%', label: 'Fixation #3 · Focal Detail', time: '320–500ms', colorBg: 'bg-blue-500', ringColor: 'ring-blue-400/40', textColor: 'text-blue-400', borderColor: 'border-blue-500/60', desc: 'Terminal fixation completes the viewer evaluation loop before clicking.' }
+    ],
+    pin1Pos: { cx: 78, cy: 15.75 },
+    pin2Pos: { cx: 28, cy: 18 },
+    pin3Pos: { cx: 52, cy: 39.38 },
+    metrics: [
+      { name: 'Face', val: '94%', color: 'bg-red-500' },
+      { name: 'Text', val: '88%', color: 'bg-amber-400' },
+      { name: 'Detail', val: '72%', color: 'bg-blue-500' }
+    ]
+  },
+  product: {
+    id: 'product' as SampleKey,
+    label: 'Tech & Product',
+    icon: '📦',
+    src: '/samples/sample_product.jpg',
+    badgeText: 'Product Focal Point',
+    ctr: '11.4%',
+    clarityScore: 96,
+    blobs: [
+      { top: '42%', left: '50%', width: '150px', height: '150px', bg: 'radial-gradient(circle, rgba(239, 68, 68, 0.9) 0%, rgba(249, 115, 22, 0.7) 35%, rgba(234, 179, 8, 0.45) 60%, transparent 80%)', blur: '16px' },
+      { top: '25%', left: '25%', width: '110px', height: '80px', bg: 'radial-gradient(ellipse, rgba(234, 179, 8, 0.8) 0%, rgba(249, 115, 22, 0.4) 45%, transparent 75%)', blur: '12px' }
+    ],
+    path1: 'M 50 23.6 C 38 18, 30 16, 25 14',
+    path2: 'M 25 14 C 42 24, 58 30, 75 38.25',
+    pins: [
+      { id: 1, top: '42%', left: '50%', label: 'Fixation #1 · Hero Product', time: '0–160ms', colorBg: 'bg-red-600', ringColor: 'ring-red-500/40', textColor: 'text-red-400', borderColor: 'border-red-500/60', desc: 'Central product lighting and isolation capture instant user focus (96% weight).' },
+      { id: 2, top: '25%', left: '25%', label: 'Fixation #2 · Brand Tag', time: '160–310ms', colorBg: 'bg-amber-500', ringColor: 'ring-amber-400/40', textColor: 'text-amber-400', borderColor: 'border-amber-500/60', desc: 'Gaze travels to high-contrast brand identifier (85% dwell).' },
+      { id: 3, top: '68%', left: '75%', label: 'Fixation #3 · Spec Callout', time: '310–500ms', colorBg: 'bg-blue-500', ringColor: 'ring-blue-400/40', textColor: 'text-blue-400', borderColor: 'border-blue-500/60', desc: 'Bottom-right spec callout validates value proposition.' }
+    ],
+    pin1Pos: { cx: 50, cy: 23.6 },
+    pin2Pos: { cx: 25, cy: 14 },
+    pin3Pos: { cx: 75, cy: 38.25 },
+    metrics: [
+      { name: 'Product', val: '96%', color: 'bg-red-500' },
+      { name: 'Brand', val: '85%', color: 'bg-amber-400' },
+      { name: 'Spec', val: '69%', color: 'bg-blue-500' }
+    ]
+  },
+  text: {
+    id: 'text' as SampleKey,
+    label: 'Bold Typography',
+    icon: '🔤',
+    src: '/samples/sample_text.jpg',
+    badgeText: 'Text Dominance',
+    ctr: '10.2%',
+    clarityScore: 91,
+    blobs: [
+      { top: '25%', left: '50%', width: '160px', height: '100px', bg: 'radial-gradient(ellipse, rgba(239, 68, 68, 0.9) 0%, rgba(249, 115, 22, 0.7) 40%, transparent 80%)', blur: '12px' },
+      { top: '65%', left: '30%', width: '120px', height: '90px', bg: 'radial-gradient(ellipse, rgba(249, 115, 22, 0.8) 0%, rgba(234, 179, 8, 0.5) 45%, transparent 75%)', blur: '12px' }
+    ],
+    path1: 'M 50 14 C 42 22, 35 28, 30 36.56',
+    path2: 'M 30 36.56 C 45 35, 62 33, 75 30.93',
+    pins: [
+      { id: 1, top: '25%', left: '50%', label: 'Fixation #1 · Impact Title', time: '0–140ms', colorBg: 'bg-red-600', ringColor: 'ring-red-500/40', textColor: 'text-red-400', borderColor: 'border-red-500/60', desc: 'Massive high-contrast title typography commands first gaze (98% weight).' },
+      { id: 2, top: '65%', left: '30%', label: 'Fixation #2 · Contrast Arrow', time: '140–330ms', colorBg: 'bg-amber-500', ringColor: 'ring-amber-400/40', textColor: 'text-amber-400', borderColor: 'border-amber-500/60', desc: 'Visual accent graphic draws secondary gaze scan (87% dwell).' },
+      { id: 3, top: '55%', left: '75%', label: 'Fixation #3 · Context Portrait', time: '330–500ms', colorBg: 'bg-blue-500', ringColor: 'ring-blue-400/40', textColor: 'text-blue-400', borderColor: 'border-blue-500/60', desc: 'Supporting reaction face provides emotional confirmation.' }
+    ],
+    pin1Pos: { cx: 50, cy: 14 },
+    pin2Pos: { cx: 30, cy: 36.56 },
+    pin3Pos: { cx: 75, cy: 30.93 },
+    metrics: [
+      { name: 'Title', val: '98%', color: 'bg-red-500' },
+      { name: 'Arrow', val: '87%', color: 'bg-amber-400' },
+      { name: 'Face', val: '76%', color: 'bg-blue-500' }
+    ]
+  }
+};
 
 export function Hero({
   onFileSelect,
@@ -52,7 +142,10 @@ export function Hero({
   const [hoveredPin, setHoveredPin] = useState<number | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [replayKey, setReplayKey] = useState(0);
+  const [activeSampleKey, setActiveSampleKey] = useState<SampleKey>('face');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const activeSample = SAMPLES_DATA[activeSampleKey];
 
   // Smooth Count-Up Animations: 0 -> 500ms
   const animated500 = useCountUp(500, { duration: 1800, delay: 150, triggerKey: replayKey });
@@ -431,330 +524,316 @@ export function Hero({
         </div>
 
         {/* ============================================================== */}
-        {/* RIGHT COLUMN: Interactive Heatmap Visual Showcase Card          */}
+        {/* RIGHT COLUMN: Enhanced Interactive Showcase Card               */}
         {/* ============================================================== */}
         <div className="lg:col-span-5 relative group">
           {/* Ambient Glow behind card */}
-          <div className="absolute -inset-1.5 bg-gradient-to-r from-purple-600/30 via-indigo-600/20 to-pink-600/30 rounded-3xl blur-xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
+          <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/35 via-pink-600/25 to-blue-600/35 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-          {/* Main Card Container */}
-          <div className="relative rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800 p-3 sm:p-4 shadow-xl backdrop-blur-xl transition-all duration-300 hover:shadow-2xl">
-            {/* Top Interactive Mode Switcher Header - Responsive Wrap */}
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-3 px-1">
-              <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-1">
-                  <span>Neural Attention Lens</span>
-                </span>
+          {/* Main Card Glass Container */}
+          <div className="relative rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800/90 p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:shadow-purple-500/10">
+            
+            {/* Header: Title + Sample Switcher Tabs */}
+            <div className="space-y-2.5 mb-3.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
+                  </span>
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
+                    <span>Neural Gaze Lens</span>
+                    <span className="px-1.5 py-0.2 rounded-md bg-purple-100 dark:bg-purple-950/80 text-[10px] font-extrabold text-purple-600 dark:text-purple-300">
+                      LIVE AI
+                    </span>
+                  </span>
+                </div>
+
+                {/* View Mode Switcher */}
+                <div className="flex items-center space-x-1 bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-xl text-[11px] font-bold border border-slate-200/80 dark:border-slate-700/80">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMode('heatmap')}
+                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      previewMode === 'heatmap'
+                        ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 shadow-xs font-extrabold'
+                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                    }`}
+                  >
+                    🔥 Heatmap
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMode('scanpath')}
+                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      previewMode === 'scanpath'
+                        ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-xs font-extrabold'
+                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                    }`}
+                  >
+                    🎯 Scanpath
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewMode('original')}
+                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      previewMode === 'original'
+                        ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs font-extrabold'
+                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                    }`}
+                  >
+                    👁️ Raw
+                  </button>
+                </div>
               </div>
 
-              {/* View Mode & Squint/Mobile Tools */}
-              <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl text-[10px] sm:text-[11px] font-bold border border-slate-200/80 dark:border-slate-700/60 overflow-x-auto">
-                <button
-                  type="button"
-                  onClick={() => setPreviewMode('heatmap')}
-                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                    previewMode === 'heatmap'
-                      ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 shadow-xs'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
-                  title="Show attention thermal intensity"
-                >
-                  🔥 Heatmap
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPreviewMode('scanpath')}
-                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                    previewMode === 'scanpath'
-                      ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-xs'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
-                  title="Show gaze scan vector sequence"
-                >
-                  🎯 Scanpath
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPreviewMode('original')}
-                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                    previewMode === 'original'
-                      ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
-                  title="Show original thumbnail"
-                >
-                  👁️ Raw
-                </button>
+              {/* Sample Selector Pills + Test Toggles */}
+              <div className="flex items-center justify-between gap-1.5 flex-wrap pt-0.5">
+                {/* 3 Sample Thumbnails Selector */}
+                <div className="flex items-center space-x-1 bg-slate-100/70 dark:bg-slate-800/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
+                  {(Object.keys(SAMPLES_DATA) as SampleKey[]).map((key) => {
+                    const sample = SAMPLES_DATA[key];
+                    const isActive = activeSampleKey === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setActiveSampleKey(key)}
+                        className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+                          isActive
+                            ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-300 shadow-xs ring-1 ring-purple-500/30'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                        }`}
+                      >
+                        <span>{sample.icon}</span>
+                        <span>{sample.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
 
-                <span className="text-slate-300 dark:text-slate-700 px-0.5">•</span>
-
-                {/* Squint Mode Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setIsSquintMode(!isSquintMode)}
-                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center space-x-1 whitespace-nowrap ${
-                    isSquintMode
-                      ? 'bg-amber-500 text-white shadow-xs font-black'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
-                  title="Simulate squint / peripheral glance test"
-                >
-                  <EyeOff className="w-3 h-3" />
-                  <span>Squint</span>
-                </button>
-
-                {/* Mobile Feed View Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setIsMobileFeedMode(!isMobileFeedMode)}
-                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center space-x-1 whitespace-nowrap ${
-                    isMobileFeedMode
-                      ? 'bg-purple-600 text-white shadow-xs font-black'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
-                  title="Simulate YouTube mobile feed card with duration badge"
-                >
-                  <Smartphone className="w-3 h-3" />
-                  <span className="hidden xs:inline">Feed</span>
-                </button>
+                {/* Squint and Mobile Feed buttons */}
+                <div className="flex items-center space-x-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsSquintMode(!isSquintMode)}
+                    className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+                      isSquintMode
+                        ? 'bg-amber-500 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                    title="Simulate peripheral / glance squint test"
+                  >
+                    <EyeOff className="w-3 h-3" />
+                    <span>Squint</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileFeedMode(!isMobileFeedMode)}
+                    className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+                      isMobileFeedMode
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                    title="Simulate YouTube mobile feed card layout"
+                  >
+                    <Smartphone className="w-3 h-3" />
+                    <span>Feed</span>
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Thumbnail Image with Live Gaze Pins and Thermal Glow */}
-            <div className={`relative aspect-video rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 shadow-inner transition-all duration-300 ${
+            {/* Thumbnail Canvas Frame */}
+            <div className={`relative aspect-video rounded-2xl overflow-hidden border border-slate-200/90 dark:border-slate-800 bg-slate-950 shadow-inner transition-all duration-300 ${
               isMobileFeedMode ? 'ring-4 ring-purple-500/30 max-w-[94%] mx-auto' : ''
             }`}>
+              {/* Main Image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/samples/sample_face.jpg"
-                alt="AI is here! YouTube Thumbnail Preview"
-                className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${
-                  isSquintMode ? 'blur-[4px] contrast-125' : ''
+                src={activeSample.src}
+                alt={activeSample.label}
+                className={`w-full h-full object-cover transition-all duration-500 ${
+                  isSquintMode ? 'blur-[5px] contrast-125 brightness-90' : 'group-hover:scale-[1.02]'
                 }`}
               />
 
-              {/* Squint Mode Active Floating Watermark */}
+              {/* Squint Test Active Overlay Badge */}
               {isSquintMode && (
-                <div className="absolute top-2 left-2 z-30 px-2 py-0.5 rounded-md bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-md flex items-center space-x-1 animate-fade-in">
-                  <EyeOff className="w-3 h-3" />
-                  <span>Squint Test Active</span>
+                <div className="absolute top-2.5 left-2.5 z-30 px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-lg flex items-center space-x-1.5 animate-fade-in">
+                  <EyeOff className="w-3.5 h-3.5" />
+                  <span>Squint Simulation Active</span>
                 </div>
               )}
 
-              {/* YouTube Duration Badge in Bottom-Right Corner (Occlusion Check) */}
-              <div className="absolute bottom-9 sm:bottom-10 right-2 z-20 px-1.5 py-0.5 rounded bg-black/85 text-white font-mono font-bold text-[10px] tracking-tight shadow-md border border-white/10 flex items-center space-x-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+              {/* YouTube Duration Badge (Occlusion Indicator) */}
+              <div className="absolute bottom-9 sm:bottom-10 right-2 z-20 px-1.5 py-0.5 rounded bg-black/90 text-white font-mono font-bold text-[10px] tracking-tight shadow-md border border-white/15 flex items-center space-x-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                 <span>14:20</span>
               </div>
 
               {/* Laser Radar Sweep Scanline */}
-              <div key={replayKey} className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-75 blur-xs animate-laser-sweep pointer-events-none" />
+              <div key={replayKey} className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-80 blur-xs animate-laser-sweep pointer-events-none z-10" />
 
-              {/* Thermal Saliency Core Overlay over the Face (Right Side) */}
-              {previewMode !== 'original' && (
+              {/* Thermal Saliency Heatmap Overlays */}
+              {previewMode !== 'original' && activeSample.blobs.map((blob, idx) => (
                 <div 
-                  className={`absolute top-1/4 right-[16%] w-32 h-32 sm:w-36 sm:h-36 rounded-full pointer-events-none transition-opacity duration-500 ${
+                  key={idx}
+                  className={`absolute rounded-full pointer-events-none transition-opacity duration-500 ${
                     previewMode === 'heatmap' ? 'opacity-90 animate-pulse' : 'opacity-40'
                   }`}
                   style={{
-                    background: 'radial-gradient(circle, rgba(239, 68, 68, 0.8) 0%, rgba(249, 115, 22, 0.65) 35%, rgba(234, 179, 8, 0.45) 60%, transparent 80%)',
-                    filter: 'blur(14px)',
+                    top: blob.top,
+                    left: blob.left,
+                    width: blob.width,
+                    height: blob.height,
+                    transform: 'translate(-50%, -50%)',
+                    background: blob.bg,
+                    filter: `blur(${blob.blur})`,
                   }}
                 />
-              )}
+              ))}
 
-              {/* Secondary Heatmap Saliency on Text (Left Side) */}
-              {previewMode === 'heatmap' && (
-                <div 
-                  className="absolute top-[28%] left-[24%] w-24 h-16 sm:w-28 sm:h-20 rounded-full pointer-events-none opacity-70 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(ellipse, rgba(234, 179, 8, 0.7) 0%, rgba(249, 115, 22, 0.4) 45%, transparent 75%)',
-                    filter: 'blur(10px)',
-                  }}
-                />
-              )}
-
-              {/* Animated SVG Scanpath — properly aligned to pin positions */}
-              {/* Coordinate space: viewBox 0 0 100 56.25 (16:9 ratio) */}
-              {/* Pin 1: Face  → 78% from left, 28% from top = (78, 15.75) */}
-              {/* Pin 2: Text  → 28% from left, 32% from top = (28, 18.00) */}
-              {/* Pin 3: Focus → 52% from left, 70% from top = (52, 39.38) */}
+              {/* Animated SVG Scanpath Vector Path */}
               {previewMode !== 'original' && (
                 <svg
-                  key={replayKey}
+                  key={`${replayKey}-${activeSampleKey}`}
                   className="absolute inset-0 w-full h-full pointer-events-none z-10"
                   viewBox="0 0 100 56.25"
                   preserveAspectRatio="none"
                 >
                   <defs>
-                    {/* Gradient along the path */}
-                    <linearGradient id="scanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%"   stopColor="#f43f5e" />
-                      <stop offset="50%"  stopColor="#a855f7" />
+                    <linearGradient id="scanGradHero" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#f43f5e" />
+                      <stop offset="50%" stopColor="#a855f7" />
                       <stop offset="100%" stopColor="#3b82f6" />
                     </linearGradient>
-
-                    {/* Glow filter */}
-                    <filter id="scanGlow" x="-30%" y="-30%" width="160%" height="160%">
+                    <filter id="scanGlowHero" x="-30%" y="-30%" width="160%" height="160%">
                       <feGaussianBlur stdDeviation="1.2" result="blur" />
                       <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                     </filter>
-
-                    {/* Arrowhead marker */}
                     <marker id="arrowA" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
-                      <polygon points="0 0, 5 2.5, 0 5" fill="#a855f7" opacity="0.9" />
+                      <polygon points="0 0, 5 2.5, 0 5" fill="#a855f7" opacity="0.95" />
                     </marker>
                     <marker id="arrowB" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
-                      <polygon points="0 0, 5 2.5, 0 5" fill="#3b82f6" opacity="0.9" />
+                      <polygon points="0 0, 5 2.5, 0 5" fill="#3b82f6" opacity="0.95" />
                     </marker>
                   </defs>
 
-                  {/* ── Segment 1: Pin1 (Face 78,15.75) → Pin2 (Text 28,18) ── */}
+                  {/* Segment 1 */}
                   <path
-                    d="M 78 15.75 C 60 10, 46 10, 28 18"
+                    d={activeSample.path1}
                     fill="none"
-                    stroke="url(#scanGrad)"
-                    strokeWidth={previewMode === 'scanpath' ? '1.5' : '0.9'}
-                    strokeOpacity={previewMode === 'scanpath' ? '1' : '0.55'}
+                    stroke="url(#scanGradHero)"
+                    strokeWidth={previewMode === 'scanpath' ? '1.6' : '1.0'}
+                    strokeOpacity={previewMode === 'scanpath' ? '1' : '0.6'}
                     strokeLinecap="round"
                     markerEnd="url(#arrowA)"
                     className="animate-scanpath"
-                    filter="url(#scanGlow)"
+                    filter="url(#scanGlowHero)"
                     style={{ animationDelay: '0.1s' }}
                   />
 
-                  {/* ── Segment 2: Pin2 (Text 28,18) → Pin3 (Focus 52,39.38) ── */}
+                  {/* Segment 2 */}
                   <path
-                    d="M 28 18 C 30 28, 40 32, 52 39.38"
+                    d={activeSample.path2}
                     fill="none"
-                    stroke="url(#scanGrad)"
-                    strokeWidth={previewMode === 'scanpath' ? '1.5' : '0.9'}
-                    strokeOpacity={previewMode === 'scanpath' ? '1' : '0.55'}
+                    stroke="url(#scanGradHero)"
+                    strokeWidth={previewMode === 'scanpath' ? '1.6' : '1.0'}
+                    strokeOpacity={previewMode === 'scanpath' ? '1' : '0.6'}
                     strokeLinecap="round"
                     markerEnd="url(#arrowB)"
                     className="animate-scanpath"
-                    filter="url(#scanGlow)"
+                    filter="url(#scanGlowHero)"
                     style={{ animationDelay: '0.9s' }}
                   />
 
-                  {/* ── Fixation dwell rings at each pin (scanpath mode only) ── */}
+                  {/* Scanpath Mode Fixation Dwell Rings */}
                   {previewMode === 'scanpath' && (
                     <>
-                      {/* Pin1 dwell ring */}
-                      <circle cx="78" cy="15.75" r="4.5" fill="none" stroke="#f43f5e" strokeWidth="0.8" strokeOpacity="0.7" className="animate-ping" />
-                      <circle cx="78" cy="15.75" r="2"   fill="#f43f5e" fillOpacity="0.9" />
-                      {/* Pin2 dwell ring */}
-                      <circle cx="28" cy="18" r="4" fill="none" stroke="#f59e0b" strokeWidth="0.8" strokeOpacity="0.7"
-                        style={{ animation: 'draw-path 1.8s 0.9s forwards, ping 1s 1s ease-out infinite' }} />
-                      <circle cx="28" cy="18" r="2" fill="#f59e0b" fillOpacity="0.9"
-                        style={{ opacity: 0, animation: 'none', animationDelay: '0.9s' }} />
-                      {/* Pin3 dwell ring */}
-                      <circle cx="52" cy="39.38" r="4" fill="none" stroke="#3b82f6" strokeWidth="0.8" strokeOpacity="0.7"
-                        style={{ animation: 'draw-path 1.8s 1.7s forwards' }} />
-                      <circle cx="52" cy="39.38" r="2" fill="#3b82f6" fillOpacity="0.9" />
+                      <circle cx={activeSample.pin1Pos.cx} cy={activeSample.pin1Pos.cy} r="4.5" fill="none" stroke="#f43f5e" strokeWidth="0.8" strokeOpacity="0.8" className="animate-ping" />
+                      <circle cx={activeSample.pin1Pos.cx} cy={activeSample.pin1Pos.cy} r="2" fill="#f43f5e" fillOpacity="0.95" />
+                      
+                      <circle cx={activeSample.pin2Pos.cx} cy={activeSample.pin2Pos.cy} r="4" fill="none" stroke="#f59e0b" strokeWidth="0.8" strokeOpacity="0.8" className="animate-ping" style={{ animationDelay: '0.9s' }} />
+                      <circle cx={activeSample.pin2Pos.cx} cy={activeSample.pin2Pos.cy} r="2" fill="#f59e0b" fillOpacity="0.95" />
+                      
+                      <circle cx={activeSample.pin3Pos.cx} cy={activeSample.pin3Pos.cy} r="4" fill="none" stroke="#3b82f6" strokeWidth="0.8" strokeOpacity="0.8" className="animate-ping" style={{ animationDelay: '1.7s' }} />
+                      <circle cx={activeSample.pin3Pos.cx} cy={activeSample.pin3Pos.cy} r="2" fill="#3b82f6" fillOpacity="0.95" />
                     </>
                   )}
                 </svg>
               )}
 
-              {/* Pin 1 — Face: right side, 28% down */}
-              {previewMode !== 'original' && (
-                <div
-                  className="absolute z-20 cursor-pointer"
-                  style={{ top: '28%', left: '78%', transform: 'translate(-50%, -50%)' }}
-                  onMouseEnter={() => setHoveredPin(1)}
-                  onMouseLeave={() => setHoveredPin(null)}
-                  onClick={() => setHoveredPin(hoveredPin === 1 ? null : 1)}
-                >
-                  <span className="absolute rounded-full bg-red-500/30 animate-ping" style={{ width: 28, height: 28, top: -4, left: -4 }} />
-                  <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-red-600 text-white font-black text-[11px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-red-500/40 transition-transform hover:scale-125 relative">
-                    1
-                  </span>
-                  {hoveredPin === 1 && (
-                    <div className="absolute bottom-full mb-2 right-0 w-48 p-2.5 rounded-xl bg-slate-900/95 border border-red-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
-                      <div className="font-bold text-red-400 flex items-center justify-between mb-1">
-                        <span>👁 Fixation #1 · Face</span>
-                        <span className="font-mono text-slate-400">0–150ms</span>
+              {/* Fixation Pins with Dynamic Hover Tooltips */}
+              {previewMode !== 'original' && activeSample.pins.map((pin) => {
+                const isHovered = hoveredPin === pin.id;
+                return (
+                  <div
+                    key={pin.id}
+                    className="absolute z-20 cursor-pointer"
+                    style={{ top: pin.top, left: pin.left, transform: 'translate(-50%, -50%)' }}
+                    onMouseEnter={() => setHoveredPin(pin.id)}
+                    onMouseLeave={() => setHoveredPin(null)}
+                    onClick={() => setHoveredPin(isHovered ? null : pin.id)}
+                  >
+                    {pin.id === 1 && (
+                      <span className="absolute rounded-full bg-red-500/40 animate-ping" style={{ width: 28, height: 28, top: -4, left: -4 }} />
+                    )}
+                    <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full ${pin.colorBg} text-white font-black text-[11px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ${pin.ringColor} transition-transform duration-200 hover:scale-125 relative`}>
+                      {pin.id}
+                    </span>
+
+                    {/* Popover Tooltip */}
+                    {isHovered && (
+                      <div className={`absolute bottom-full mb-2 ${pin.id === 1 ? 'right-0' : pin.id === 3 ? 'left-1/2 -translate-x-1/2' : 'left-0'} w-52 p-2.5 rounded-xl bg-slate-900/95 border ${pin.borderColor} shadow-2xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in`}>
+                        <div className={`font-bold ${pin.textColor} flex items-center justify-between mb-1`}>
+                          <span>{pin.label}</span>
+                          <span className="font-mono text-slate-400 text-[9px]">{pin.time}</span>
+                        </div>
+                        <p className="text-slate-300 leading-snug">{pin.desc}</p>
                       </div>
-                      <p className="text-slate-300 leading-snug">Primary gaze anchor — biological face detection fires immediately. 94% saliency weight.</p>
-                    </div>
-                  )}
-                </div>
-              )}
+                    )}
+                  </div>
+                );
+              })}
 
-              {/* Pin 2 — Headline Text: left side, 28% down */}
-              {previewMode !== 'original' && (
-                <div
-                  className="absolute z-20 cursor-pointer"
-                  style={{ top: '28%', left: '28%', transform: 'translate(-50%, -50%)' }}
-                  onMouseEnter={() => setHoveredPin(2)}
-                  onMouseLeave={() => setHoveredPin(null)}
-                  onClick={() => setHoveredPin(hoveredPin === 2 ? null : 2)}
-                >
-                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500 text-white font-black text-[10px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-amber-400/40 transition-transform hover:scale-125 relative">
-                    2
-                  </span>
-                  {hoveredPin === 2 && (
-                    <div className="absolute bottom-full mb-2 left-0 w-48 p-2.5 rounded-xl bg-slate-900/95 border border-amber-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
-                      <div className="font-bold text-amber-400 flex items-center justify-between mb-1">
-                        <span>👁 Fixation #2 · Title</span>
-                        <span className="font-mono text-slate-400">150–320ms</span>
-                      </div>
-                      <p className="text-slate-300 leading-snug">Saccade lands on high-contrast headline text. 88% contrast pop drives dwell.</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Pin 3 — Focal Detail: center-bottom, 70% down */}
-              {previewMode !== 'original' && (
-                <div
-                  className="absolute z-20 cursor-pointer"
-                  style={{ top: '70%', left: '52%', transform: 'translate(-50%, -50%)' }}
-                  onMouseEnter={() => setHoveredPin(3)}
-                  onMouseLeave={() => setHoveredPin(null)}
-                  onClick={() => setHoveredPin(hoveredPin === 3 ? null : 3)}
-                >
-                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500 text-white font-black text-[10px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-blue-400/40 transition-transform hover:scale-125 relative">
-                    3
-                  </span>
-                  {hoveredPin === 3 && (
-                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-2.5 rounded-xl bg-slate-900/95 border border-blue-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
-                      <div className="font-bold text-blue-400 flex items-center justify-between mb-1">
-                        <span>👁 Fixation #3 · Detail</span>
-                        <span className="font-mono text-slate-400">320–500ms</span>
-                      </div>
-                      <p className="text-slate-300 leading-snug">Terminal fixation on complementary graphic — completes the viewer decision scan.</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-
-              {/* Bottom Metrics Bar inside the Thumbnail Preview */}
-              <div className="absolute bottom-0 inset-x-0 bg-slate-950/90 backdrop-blur-md px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between text-[10px] sm:text-[11px] font-semibold text-white/90 border-t border-white/10 z-20">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                  <span className="flex items-center space-x-1">
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                    <span className="hidden xs:inline">Face:</span> <strong className="text-white">94%</strong>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <span className="w-2 h-2 rounded-full bg-amber-400" />
-                    <span className="hidden xs:inline">Text:</span> <strong className="text-white">88%</strong>
-                  </span>
+              {/* Bottom Metrics HUD inside the Thumbnail */}
+              <div className="absolute bottom-0 inset-x-0 bg-slate-950/90 backdrop-blur-md px-3 py-1.5 flex items-center justify-between text-[10px] sm:text-[11px] font-semibold text-white/90 border-t border-white/10 z-20">
+                <div className="flex items-center space-x-2.5">
+                  {activeSample.metrics.map((m, idx) => (
+                    <span key={idx} className="flex items-center space-x-1">
+                      <span className={`w-2 h-2 rounded-full ${m.color}`} />
+                      <span className="text-slate-400">{m.name}:</span> <strong className="text-white">{m.val}</strong>
+                    </span>
+                  ))}
                 </div>
                 <div className="text-purple-300 font-bold flex items-center space-x-1">
                   <Activity className="w-3 h-3 text-purple-400 animate-pulse" />
-                  <span>Predicted CTR: 9.8%</span>
+                  <span>Predicted CTR: {activeSample.ctr}</span>
                 </div>
               </div>
             </div>
 
-            {/* Floating High Contrast Anchor Badge with Gentle Float Animation */}
-            <div className="absolute -bottom-3 right-4 sm:right-7 px-3 py-1 sm:py-1.5 rounded-full bg-white dark:bg-slate-800 border border-purple-200 dark:border-purple-800 shadow-xl flex items-center space-x-1.5 text-[11px] sm:text-xs font-bold text-purple-700 dark:text-purple-300 animate-float-badge z-30">
+            {/* Bottom Card Analytics HUD Footer */}
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-300 font-bold">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Clarity Score:</span>
+                  <span className="font-mono font-black text-purple-600 dark:text-purple-400">{activeSample.clarityScore}/100</span>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px] bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg border border-emerald-200/80 dark:border-emerald-900/60">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>+24.3% CTR Lift vs Avg</span>
+              </div>
+            </div>
+
+            {/* Floating Glass Highlight Badge */}
+            <div className="absolute -bottom-3.5 right-4 sm:right-6 px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-purple-300/80 dark:border-purple-700/80 shadow-2xl flex items-center space-x-1.5 text-[11px] font-bold text-purple-700 dark:text-purple-300 animate-float-badge z-30">
               <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 animate-spin" />
-              <span>High Contrast Anchor</span>
+              <span>{activeSample.badgeText}</span>
             </div>
           </div>
         </div>
