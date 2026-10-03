@@ -545,111 +545,162 @@ export function Hero({
                 />
               )}
 
-              {/* Animated SVG Scanpath Vector Line (Pin 1 -> Pin 2 -> Pin 3) */}
+              {/* Animated SVG Scanpath — properly aligned to pin positions */}
+              {/* Coordinate space: viewBox 0 0 100 56.25 (16:9 ratio) */}
+              {/* Pin 1: Face  → 78% from left, 28% from top = (78, 15.75) */}
+              {/* Pin 2: Text  → 28% from left, 32% from top = (28, 18.00) */}
+              {/* Pin 3: Focus → 52% from left, 70% from top = (52, 39.38) */}
               {previewMode !== 'original' && (
                 <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none z-10 transition-opacity duration-300"
-                  viewBox="0 0 100 100"
+                  key={replayKey}
+                  className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                  viewBox="0 0 100 56.25"
                   preserveAspectRatio="none"
                 >
                   <defs>
-                    <linearGradient id="heroScanGrad" x1="100%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#f43f5e" />
-                      <stop offset="50%" stopColor="#a855f7" />
+                    {/* Gradient along the path */}
+                    <linearGradient id="scanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%"   stopColor="#f43f5e" />
+                      <stop offset="50%"  stopColor="#a855f7" />
                       <stop offset="100%" stopColor="#3b82f6" />
                     </linearGradient>
-                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="1.5" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+
+                    {/* Glow filter */}
+                    <filter id="scanGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="1.2" result="blur" />
+                      <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                     </filter>
+
+                    {/* Arrowhead marker */}
+                    <marker id="arrowA" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+                      <polygon points="0 0, 5 2.5, 0 5" fill="#a855f7" opacity="0.9" />
+                    </marker>
+                    <marker id="arrowB" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+                      <polygon points="0 0, 5 2.5, 0 5" fill="#3b82f6" opacity="0.9" />
+                    </marker>
                   </defs>
 
-                  {/* Curving Scanpath Line */}
+                  {/* ── Segment 1: Pin1 (Face 78,15.75) → Pin2 (Text 28,18) ── */}
                   <path
-                    d="M 78 28 C 55 20, 42 24, 28 32 C 34 52, 42 62, 52 70"
+                    d="M 78 15.75 C 60 10, 46 10, 28 18"
                     fill="none"
-                    stroke="url(#heroScanGrad)"
-                    strokeWidth={previewMode === 'scanpath' ? "2" : "1.2"}
-                    strokeOpacity={previewMode === 'scanpath' ? "0.95" : "0.6"}
+                    stroke="url(#scanGrad)"
+                    strokeWidth={previewMode === 'scanpath' ? '1.5' : '0.9'}
+                    strokeOpacity={previewMode === 'scanpath' ? '1' : '0.55'}
+                    strokeLinecap="round"
+                    markerEnd="url(#arrowA)"
                     className="animate-scanpath"
-                    filter="url(#glow)"
+                    filter="url(#scanGlow)"
+                    style={{ animationDelay: '0.1s' }}
                   />
+
+                  {/* ── Segment 2: Pin2 (Text 28,18) → Pin3 (Focus 52,39.38) ── */}
+                  <path
+                    d="M 28 18 C 30 28, 40 32, 52 39.38"
+                    fill="none"
+                    stroke="url(#scanGrad)"
+                    strokeWidth={previewMode === 'scanpath' ? '1.5' : '0.9'}
+                    strokeOpacity={previewMode === 'scanpath' ? '1' : '0.55'}
+                    strokeLinecap="round"
+                    markerEnd="url(#arrowB)"
+                    className="animate-scanpath"
+                    filter="url(#scanGlow)"
+                    style={{ animationDelay: '0.9s' }}
+                  />
+
+                  {/* ── Fixation dwell rings at each pin (scanpath mode only) ── */}
+                  {previewMode === 'scanpath' && (
+                    <>
+                      {/* Pin1 dwell ring */}
+                      <circle cx="78" cy="15.75" r="4.5" fill="none" stroke="#f43f5e" strokeWidth="0.8" strokeOpacity="0.7" className="animate-ping" />
+                      <circle cx="78" cy="15.75" r="2"   fill="#f43f5e" fillOpacity="0.9" />
+                      {/* Pin2 dwell ring */}
+                      <circle cx="28" cy="18" r="4" fill="none" stroke="#f59e0b" strokeWidth="0.8" strokeOpacity="0.7"
+                        style={{ animation: 'draw-path 1.8s 0.9s forwards, ping 1s 1s ease-out infinite' }} />
+                      <circle cx="28" cy="18" r="2" fill="#f59e0b" fillOpacity="0.9"
+                        style={{ opacity: 0, animation: 'none', animationDelay: '0.9s' }} />
+                      {/* Pin3 dwell ring */}
+                      <circle cx="52" cy="39.38" r="4" fill="none" stroke="#3b82f6" strokeWidth="0.8" strokeOpacity="0.7"
+                        style={{ animation: 'draw-path 1.8s 1.7s forwards' }} />
+                      <circle cx="52" cy="39.38" r="2" fill="#3b82f6" fillOpacity="0.9" />
+                    </>
+                  )}
                 </svg>
               )}
 
-              {/* Numbered Gaze Fixation Pins with Interactive Tooltips */}
+              {/* Pin 1 — Face: right side, 28% down */}
               {previewMode !== 'original' && (
-                <>
-                  {/* Pin 1: Face (Right) */}
-                  <div 
-                    className="absolute top-[28%] right-[22%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-20 cursor-pointer"
-                    onMouseEnter={() => setHoveredPin(1)}
-                    onMouseLeave={() => setHoveredPin(null)}
-                    onClick={() => setHoveredPin(hoveredPin === 1 ? null : 1)}
-                  >
-                    <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-red-600 text-white font-black text-[11px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-red-500/40 animate-pulse transition-transform hover:scale-125">
-                      1
-                    </span>
-
-                    {/* Tooltip */}
-                    {hoveredPin === 1 && (
-                      <div className="absolute bottom-full mb-2 right-0 sm:right-1/2 sm:translate-x-1/2 w-44 sm:w-48 p-2 rounded-xl bg-slate-900/95 border border-red-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
-                        <div className="font-bold text-red-400 flex items-center justify-between">
-                          <span>Hotspot #1 • Face</span>
-                          <span className="font-mono">0ms - 150ms</span>
-                        </div>
-                        <p className="text-slate-300 mt-0.5">High emotional resonance & primary gaze anchor (94% saliency).</p>
+                <div
+                  className="absolute z-20 cursor-pointer"
+                  style={{ top: '28%', left: '78%', transform: 'translate(-50%, -50%)' }}
+                  onMouseEnter={() => setHoveredPin(1)}
+                  onMouseLeave={() => setHoveredPin(null)}
+                  onClick={() => setHoveredPin(hoveredPin === 1 ? null : 1)}
+                >
+                  <span className="absolute rounded-full bg-red-500/30 animate-ping" style={{ width: 28, height: 28, top: -4, left: -4 }} />
+                  <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-red-600 text-white font-black text-[11px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-red-500/40 transition-transform hover:scale-125 relative">
+                    1
+                  </span>
+                  {hoveredPin === 1 && (
+                    <div className="absolute bottom-full mb-2 right-0 w-48 p-2.5 rounded-xl bg-slate-900/95 border border-red-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
+                      <div className="font-bold text-red-400 flex items-center justify-between mb-1">
+                        <span>👁 Fixation #1 · Face</span>
+                        <span className="font-mono text-slate-400">0–150ms</span>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Pin 2: Headline Text (Left) */}
-                  <div 
-                    className="absolute top-[32%] left-[28%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-20 cursor-pointer"
-                    onMouseEnter={() => setHoveredPin(2)}
-                    onMouseLeave={() => setHoveredPin(null)}
-                    onClick={() => setHoveredPin(hoveredPin === 2 ? null : 2)}
-                  >
-                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500 text-white font-black text-[10px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-amber-400/40 transition-transform hover:scale-125">
-                      2
-                    </span>
-
-                    {/* Tooltip */}
-                    {hoveredPin === 2 && (
-                      <div className="absolute bottom-full mb-2 left-0 sm:left-1/2 sm:-translate-x-1/2 w-44 sm:w-48 p-2 rounded-xl bg-slate-900/95 border border-amber-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
-                        <div className="font-bold text-amber-400 flex items-center justify-between">
-                          <span>Hotspot #2 • Title</span>
-                          <span className="font-mono">150ms - 320ms</span>
-                        </div>
-                        <p className="text-slate-300 mt-0.5">Clear yellow font against dark backdrop yields 88% contrast pop.</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Pin 3: Hologram Code / Hand (Center-Bottom) */}
-                  <div 
-                    className="absolute bottom-[30%] left-[52%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-20 cursor-pointer"
-                    onMouseEnter={() => setHoveredPin(3)}
-                    onMouseLeave={() => setHoveredPin(null)}
-                    onClick={() => setHoveredPin(hoveredPin === 3 ? null : 3)}
-                  >
-                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500 text-white font-black text-[10px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-blue-400/40 transition-transform hover:scale-125">
-                      3
-                    </span>
-
-                    {/* Tooltip */}
-                    {hoveredPin === 3 && (
-                      <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 sm:w-48 p-2 rounded-xl bg-slate-900/95 border border-blue-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
-                        <div className="font-bold text-blue-400 flex items-center justify-between">
-                          <span>Hotspot #3 • Focus</span>
-                          <span className="font-mono">320ms - 500ms</span>
-                        </div>
-                        <p className="text-slate-300 mt-0.5">Complementary graphic accent completing viewer scan journey.</p>
-                      </div>
-                    )}
-                  </div>
-                </>
+                      <p className="text-slate-300 leading-snug">Primary gaze anchor — biological face detection fires immediately. 94% saliency weight.</p>
+                    </div>
+                  )}
+                </div>
               )}
+
+              {/* Pin 2 — Headline Text: left side, 28% down */}
+              {previewMode !== 'original' && (
+                <div
+                  className="absolute z-20 cursor-pointer"
+                  style={{ top: '28%', left: '28%', transform: 'translate(-50%, -50%)' }}
+                  onMouseEnter={() => setHoveredPin(2)}
+                  onMouseLeave={() => setHoveredPin(null)}
+                  onClick={() => setHoveredPin(hoveredPin === 2 ? null : 2)}
+                >
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500 text-white font-black text-[10px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-amber-400/40 transition-transform hover:scale-125 relative">
+                    2
+                  </span>
+                  {hoveredPin === 2 && (
+                    <div className="absolute bottom-full mb-2 left-0 w-48 p-2.5 rounded-xl bg-slate-900/95 border border-amber-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
+                      <div className="font-bold text-amber-400 flex items-center justify-between mb-1">
+                        <span>👁 Fixation #2 · Title</span>
+                        <span className="font-mono text-slate-400">150–320ms</span>
+                      </div>
+                      <p className="text-slate-300 leading-snug">Saccade lands on high-contrast headline text. 88% contrast pop drives dwell.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Pin 3 — Focal Detail: center-bottom, 70% down */}
+              {previewMode !== 'original' && (
+                <div
+                  className="absolute z-20 cursor-pointer"
+                  style={{ top: '70%', left: '52%', transform: 'translate(-50%, -50%)' }}
+                  onMouseEnter={() => setHoveredPin(3)}
+                  onMouseLeave={() => setHoveredPin(null)}
+                  onClick={() => setHoveredPin(hoveredPin === 3 ? null : 3)}
+                >
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500 text-white font-black text-[10px] sm:text-xs flex items-center justify-center shadow-lg ring-4 ring-blue-400/40 transition-transform hover:scale-125 relative">
+                    3
+                  </span>
+                  {hoveredPin === 3 && (
+                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-2.5 rounded-xl bg-slate-900/95 border border-blue-500/60 shadow-xl backdrop-blur-md text-[10px] text-white z-30 pointer-events-none animate-fade-in">
+                      <div className="font-bold text-blue-400 flex items-center justify-between mb-1">
+                        <span>👁 Fixation #3 · Detail</span>
+                        <span className="font-mono text-slate-400">320–500ms</span>
+                      </div>
+                      <p className="text-slate-300 leading-snug">Terminal fixation on complementary graphic — completes the viewer decision scan.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
 
               {/* Bottom Metrics Bar inside the Thumbnail Preview */}
               <div className="absolute bottom-0 inset-x-0 bg-slate-950/90 backdrop-blur-md px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center justify-between text-[10px] sm:text-[11px] font-semibold text-white/90 border-t border-white/10 z-20">
