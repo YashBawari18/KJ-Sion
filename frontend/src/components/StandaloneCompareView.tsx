@@ -255,7 +255,7 @@ export function StandaloneCompareView() {
             <button
               onClick={handleRunComparison}
               disabled={isComparing || (slotA.mode === 'youtube' ? !slotA.youtubeUrl : !slotA.file) || (slotB.mode === 'youtube' ? !slotB.youtubeUrl : !slotB.file)}
-              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-purple-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mx-auto cursor-pointer"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-purple-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mx-auto cursor-pointer"
             >
               {isComparing ? (
                 <>

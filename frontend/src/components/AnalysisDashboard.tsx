@@ -471,13 +471,19 @@ export function AnalysisDashboard({
             </defs>
           </svg>
 
-          {/* Time & Phase Labels */}
-          <div className="absolute bottom-2 inset-x-6 flex justify-between text-[10px] font-mono text-slate-400">
+          {/* Time & Phase Labels - Fully Responsive */}
+          <div className="hidden sm:flex absolute bottom-2 inset-x-6 justify-between text-[10px] font-mono text-slate-400">
             <span>0ms (Impression)</span>
             <span>120ms (Focal Lock)</span>
             <span>250ms (Comprehension)</span>
-            <span>380ms (Detail Synthesis)</span>
-            <span>500ms (Decision Threshold)</span>
+            <span>380ms (Synthesis)</span>
+            <span>500ms (Decision)</span>
+          </div>
+          <div className="flex sm:hidden absolute bottom-1.5 inset-x-3 justify-between text-[9px] font-mono text-slate-400">
+            <span>0ms</span>
+            <span>120ms</span>
+            <span>250ms</span>
+            <span>500ms</span>
           </div>
         </div>
 

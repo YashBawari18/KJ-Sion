@@ -395,7 +395,7 @@ export function FeedBattleView({
           <span>AUTONOMOUS ATTENTION SIMULATION</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 rounded-3xl bg-slate-950 border border-slate-800 text-white shadow-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 p-3.5 sm:p-6 rounded-3xl bg-slate-950 border border-slate-800 text-white shadow-xl">
           {/* Build a 6-slot grid: slot 0 = competitor[0], slot 1 = YOUR card, slots 2-5 = competitors[1-4] */}
           {[0, 1, 2, 3, 4, 5].map((slot) => {
             // Slot 1 is always the user's highlighted card
