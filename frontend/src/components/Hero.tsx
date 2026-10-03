@@ -122,12 +122,42 @@ export function Hero({
           </div>
 
           {/* Main Headline with 0 -> 500ms Animated Counter */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-black tracking-tight text-slate-900 dark:text-white leading-[1.1] transition-all">
-            {t('heroTitlePrefix') || 'Where will viewers look'}{' '}
-            <span className="bg-gradient-to-r from-purple-600 via-indigo-500 to-pink-500 bg-clip-text text-transparent animate-shimmer inline-block">
-              in the first <span className="font-mono tabular-nums text-purple-600 dark:text-purple-400">{animated500}</span>ms?
-            </span>
-          </h1>
+          {(() => {
+            const heroTitlePrefix = t('heroTitlePrefix') || 'Where will viewers look ';
+            const heroTitleGradient = t('heroTitleGradient') || 'in the first 500ms?';
+
+            let prefixNode: React.ReactNode = heroTitlePrefix;
+            let gradientNode: React.ReactNode = heroTitleGradient;
+
+            if (heroTitleGradient.includes('500')) {
+              const [b, a] = heroTitleGradient.split('500');
+              gradientNode = (
+                <>
+                  {b}
+                  <span className="font-mono tabular-nums text-purple-600 dark:text-purple-400">{animated500}</span>
+                  {a}
+                </>
+              );
+            } else if (heroTitlePrefix.includes('500')) {
+              const [b, a] = heroTitlePrefix.split('500');
+              prefixNode = (
+                <>
+                  {b}
+                  <span className="font-mono tabular-nums text-purple-600 dark:text-purple-400">{animated500}</span>
+                  {a}
+                </>
+              );
+            }
+
+            return (
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-black tracking-tight text-slate-900 dark:text-white leading-[1.1] transition-all">
+                {prefixNode}{' '}
+                <span className="bg-gradient-to-r from-purple-600 via-indigo-500 to-pink-500 bg-clip-text text-transparent animate-shimmer inline-block">
+                  {gradientNode}
+                </span>
+              </h1>
+            );
+          })()}
 
           <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
             {t('heroSubtitle') || 'AI-powered predicted visual attention analysis for YouTube thumbnails. Diagnose fixation hotspots, trace viewer scan journeys, and optimize your visual hierarchy before you post.'}
