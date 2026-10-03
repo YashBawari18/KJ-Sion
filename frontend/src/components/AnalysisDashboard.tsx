@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import { AnalysisResponse, ExplainResponse } from '@/types/analysis';
 import { 
   Flame, 
@@ -40,6 +41,7 @@ export function AnalysisDashboard({
   onGoToCompare,
   onGoToBattle,
 }: AnalysisDashboardProps) {
+  const { t } = useLanguage();
   const [activeHeatmapMode, setActiveHeatmapMode] = useState<'thermal' | 'spectral' | 'contour' | 'gaze'>('thermal');
   const [videoTitle, setVideoTitle] = useState<string>(
     data.youtube_info?.title || data.image_metadata?.title || (data.image_metadata?.filename ? data.image_metadata.filename.replace(/\.[^/.]+$/, '').replace(/sample_/g, '').replace(/[-_]/g, ' ') : 'YouTube Video Packaging Test')
@@ -79,19 +81,19 @@ export function AnalysisDashboard({
           {/* Breadcrumb */}
           <div className="flex items-center space-x-1.5 text-xs text-slate-400 dark:text-slate-500 mb-1.5">
             <span className="hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer" onClick={onReset}>
-              Analyses
+              {t('Analyses')}
             </span>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="font-semibold text-slate-700 dark:text-slate-300 truncate max-w-xs sm:max-w-md">
               "{displayTitle}"
             </span>
             <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-purple-600 dark:text-purple-400 font-bold">Results</span>
+            <span className="text-purple-600 dark:text-purple-400 font-bold">{t('tabResults')}</span>
           </div>
 
           {/* Page Title & Subtitle */}
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            Analysis Results
+            {t('Analysis Results')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 flex flex-wrap items-center gap-1.5">
             {data.youtube_info ? (
@@ -121,13 +123,13 @@ export function AnalysisDashboard({
               <svg className="w-3.5 h-3.5 fill-current text-red-600" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
-              <span>View on YouTube</span>
+              <span>{t('View on YouTube')}</span>
             </a>
           )}
 
           <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-950/70 border border-purple-200 dark:border-purple-800 text-xs font-semibold text-purple-700 dark:text-purple-300 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse" />
-            <span>Analyzed: 10M+ Video Saliency Weights</span>
+            <span>{t('Analyzed: 10M+ Video Saliency Weights') || 'Analyzed: 10M+ Video Saliency Weights'}</span>
           </div>
 
           <a
@@ -136,7 +138,7 @@ export function AnalysisDashboard({
             className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-2xs transition-colors cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Export Summary</span>
+            <span>{t('Export Summary')}</span>
           </a>
         </div>
       </div>
@@ -151,7 +153,7 @@ export function AnalysisDashboard({
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-1.5">
-                <span>Original Thumbnail</span>
+                <span>{t('Original Thumbnail')}</span>
               </span>
               <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                 {(data.image_metadata?.original_width || data.image_metadata?.width || 1280)}×{(data.image_metadata?.original_height || data.image_metadata?.height || 720)} · {data.image_metadata?.format || 'High Res'}
@@ -171,19 +173,19 @@ export function AnalysisDashboard({
           {/* Bottom Subject / Dominance / Clarity Bar */}
           <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 text-center text-xs">
             <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">SUBJECT</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('SUBJECT') || 'SUBJECT'}</p>
               <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5 truncate px-1" title={data.youtube_info?.channel_name || (data.regions && data.regions[0] ? data.regions[0].label : 'Hero Visual')}>
                 {data.youtube_info?.channel_name || (data.regions && data.regions[0] ? data.regions[0].label : 'Hero Visual')}
               </p>
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">DOMINANCE</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('DOMINANCE') || 'DOMINANCE'}</p>
               <p className="font-bold text-purple-600 dark:text-purple-400 mt-0.5">
                 {data.regions && data.regions[0] ? `${data.regions[0].label.split(' ')[0]} ${Math.round(data.regions[0].share_percent)}%` : `${Math.round(score * 0.65)}% Focus`}
               </p>
             </div>
             <div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CLARITY</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('CLARITY') || 'CLARITY'}</p>
               <p className="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
                 {(Math.min(9.9, Math.max(7.2, (score / 10) * 0.95 + 0.5))).toFixed(1)}/10
               </p>
@@ -197,7 +199,7 @@ export function AnalysisDashboard({
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-1.5">
                 <Flame className="w-3.5 h-3.5 text-rose-500 fill-rose-500/20" />
-                <span>Attention Heatmap</span>
+                <span>{t('Attention Heatmap')}</span>
               </span>
               <span className="px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/70 border border-rose-200 dark:border-rose-900/60 text-[10px] font-bold text-rose-600 dark:text-rose-400">
                 Thermal Saliency
@@ -295,7 +297,7 @@ export function AnalysisDashboard({
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                <span>Attention Score</span>
+                <span>{t('Attention Score')}</span>
               </span>
               <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
                 Top 5% Category
@@ -335,14 +337,14 @@ export function AnalysisDashboard({
               {/* CTR Potential & First Fixation */}
               <div className="space-y-2">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">CTR Potential</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t('CTR Potential') || 'CTR Potential'}</p>
                   <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
                     <TrendingUp className="w-3.5 h-3.5" />
                     <span>+18.4%</span>
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">First Fixation</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t('First Fixation') || 'First Fixation'}</p>
                   <p className="text-sm font-black text-purple-600 dark:text-purple-400">64ms</p>
                 </div>
               </div>
@@ -414,17 +416,17 @@ export function AnalysisDashboard({
             <div className="flex items-center space-x-2">
               <span className="text-purple-600 font-bold">~</span>
               <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                Attention Journey & Fixation Curve
+                {t('Attention Journey & Fixation Curve') || 'Attention Journey & Fixation Curve'}
               </h3>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Continuous eye-tracking saliency flow across first 500 milliseconds
+              {t('Continuous eye-tracking saliency flow across first 500 milliseconds') || 'Continuous eye-tracking saliency flow across first 500 milliseconds'}
             </p>
           </div>
 
           <div className="flex items-center space-x-2">
             <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
-              Optimal Scan Sequence
+              {t('Optimal Scan Sequence') || 'Optimal Scan Sequence'}
             </span>
             <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-slate-500">
               0ms ... 500ms
@@ -562,7 +564,7 @@ export function AnalysisDashboard({
               <div className="flex items-center space-x-2">
                 <BarChart3 className="w-4 h-4 text-purple-600" />
                 <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                  Cognitive Saliency Vectors
+                  {t('Cognitive Saliency Vectors') || 'Cognitive Saliency Vectors'}
                 </h3>
               </div>
               <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300">
@@ -576,7 +578,7 @@ export function AnalysisDashboard({
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <Smile className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Facial Emotional Gaze</span>
+                    <span>{t('Facial Emotional Gaze') || 'Facial Emotional Gaze'}</span>
                   </span>
                   <span className={`font-bold ${faceSaliency > 50 ? 'text-rose-500' : 'text-slate-500'}`}>
                     {faceSaliency}/100 · {faceSaliency > 70 ? 'High Draw' : faceSaliency > 20 ? 'Moderate' : 'No Faces'}
@@ -592,7 +594,7 @@ export function AnalysisDashboard({
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <Zap className="w-3.5 h-3.5 text-blue-500" />
-                    <span>Visual Saliency & Luminance</span>
+                    <span>{t('Visual Saliency & Luminance') || 'Visual Saliency & Luminance'}</span>
                   </span>
                   <span className="font-bold text-blue-500">
                     {visualSaliency}/100 · {visualSaliency > 75 ? 'Sharp Focus' : 'Balanced'}
@@ -608,7 +610,7 @@ export function AnalysisDashboard({
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <span className="font-mono text-purple-600 font-bold">T</span>
-                    <span>Typographic Prominence</span>
+                    <span>{t('Typographic Prominence') || 'Typographic Prominence'}</span>
                   </span>
                   <span className="font-bold text-purple-600">
                     {textProminence}/100 · {textProminence > 60 ? 'Crisp Copy' : textProminence > 20 ? 'Subtle Text' : 'Minimal Text'}
@@ -624,7 +626,7 @@ export function AnalysisDashboard({
                 <div className="flex items-center justify-between text-xs font-semibold mb-1">
                   <span className="text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                    <span>Contrast & Silhouette Depth</span>
+                    <span>{t('Contrast & Silhouette Depth') || 'Contrast & Silhouette Depth'}</span>
                   </span>
                   <span className="font-bold text-amber-500">
                     {textContrast}/100 · {textContrast > 70 ? 'High Pop' : 'Cohesive'}
@@ -655,7 +657,7 @@ export function AnalysisDashboard({
               <div className="flex items-center space-x-2">
                 <Layers className="w-4 h-4 text-purple-600" />
                 <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                  Attention Mass Distribution
+                  {t('Attention Mass Distribution') || 'Attention Mass Distribution'}
                 </h3>
               </div>
               <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300">
@@ -714,7 +716,7 @@ export function AnalysisDashboard({
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0" />
-                      <span className="text-slate-700 dark:text-slate-300">Negative Space:</span>
+                      <span className="text-slate-700 dark:text-slate-300">{t('Negative Space') || 'Negative Space'}:</span>
                       <strong className="text-slate-900 dark:text-white ml-auto">{sRem}%</strong>
                     </div>
                   </div>
@@ -729,7 +731,7 @@ export function AnalysisDashboard({
             </span>
             <span className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-semibold">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Low Clutter Score</span>
+              <span>{t('Low Clutter Score') || 'Low Clutter Score'}</span>
             </span>
           </div>
         </div>
@@ -745,7 +747,7 @@ export function AnalysisDashboard({
           <div className="flex items-center space-x-2">
             <Sparkles className="w-5 h-5 text-purple-600" />
             <h3 className="text-lg font-black text-slate-900 dark:text-white">
-              AI Optimization Deltas
+              {t('AI Optimization Deltas') || 'AI Optimization Deltas'}
             </h3>
           </div>
 
@@ -755,7 +757,7 @@ export function AnalysisDashboard({
               className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-2xs cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
-              <span>Report PDF</span>
+              <span>{t('Report PDF') || 'Report PDF'}</span>
             </button>
 
             <button
@@ -763,7 +765,7 @@ export function AnalysisDashboard({
               className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md shadow-purple-500/20 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Apply Deltas</span>
+              <span>{t('Apply Deltas') || 'Apply Deltas'}</span>
             </button>
           </div>
         </div>
@@ -895,7 +897,7 @@ export function AnalysisDashboard({
               <div>
                 <div className="flex items-center space-x-2">
                   <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
-                    Title + Thumbnail Packaging Hook Synergy
+                    {t('Title + Thumbnail Packaging Hook Synergy') || 'Title + Thumbnail Packaging Hook Synergy'}
                   </h4>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
                     AI Packaging Engine
@@ -922,7 +924,7 @@ export function AnalysisDashboard({
           {/* Interactive Title Input */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-              <span>Test Video Title with this Thumbnail:</span>
+              <span>{t('Test Video Title with this Thumbnail:') || 'Test Video Title with this Thumbnail:'}</span>
               <span className={`text-[11px] font-mono ${videoTitle.length <= 50 ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-amber-600 dark:text-amber-400'}`}>
                 {videoTitle.length} chars {videoTitle.length <= 50 ? '• Mobile Safe (<50)' : '• May Truncate on Mobile'}
               </span>
@@ -942,7 +944,7 @@ export function AnalysisDashboard({
             <div className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 space-y-1">
               <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <span>Curiosity Gap</span>
+                <span>{t('Curiosity Gap') || 'Curiosity Gap'}</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
                 {videoTitle.toLowerCase().includes('why') || videoTitle.toLowerCase().includes('tested') || videoTitle.toLowerCase().includes('secret') || videoTitle.toLowerCase().includes('worst') || videoTitle.toLowerCase().includes('ever')
@@ -955,7 +957,7 @@ export function AnalysisDashboard({
             <div className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 space-y-1">
               <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
                 <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-                <span>Zero Redundancy</span>
+                <span>{t('Zero Redundancy') || 'Zero Redundancy'}</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
                 Thumbnail text does not duplicate title words. Maximizes cognitive real estate.
@@ -966,7 +968,7 @@ export function AnalysisDashboard({
             <div className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 space-y-1">
               <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
                 <Smartphone className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-                <span>Saccade Hand-off</span>
+                <span>{t('Saccade Hand-off') || 'Saccade Hand-off'}</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
                 Viewer fixates on face first (140ms), then drops natural gaze to title's first 3 words (280ms).
@@ -982,12 +984,12 @@ export function AnalysisDashboard({
             <div className="space-y-1.5">
               <div className="flex items-center space-x-2">
                 <span className="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">
-                  Battle Arena
+                  {t('Battle Arena') || 'Battle Arena'}
                 </span>
                 <span className="text-xs text-purple-200 font-semibold">Simulated YouTube Feed</span>
               </div>
               <h4 className="text-lg font-black tracking-tight text-white">
-                Battle Against Niche Leaders
+                {t('Battle Against Niche Leaders') || 'Battle Against Niche Leaders'}
               </h4>
               <p className="text-xs text-slate-300 leading-relaxed">
                 Pit this thumbnail in a live 6-video YouTube home feed against MKBHD, MrBeast, and Linus Tech Tips to calculate your Attention Steal Rate.
@@ -999,7 +1001,7 @@ export function AnalysisDashboard({
               className="inline-flex items-center justify-center space-x-2 w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
               <Swords className="w-4 h-4" />
-              <span>Launch Feed Battle Simulator</span>
+              <span>{t('Launch Feed Battle Simulator') || 'Launch Feed Battle Simulator'}</span>
             </button>
           </div>
 
@@ -1013,7 +1015,7 @@ export function AnalysisDashboard({
                 <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Side-by-Side</span>
               </div>
               <h4 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
-                Head-to-Head Variant Compare
+                {t('Head-to-Head Variant Compare') || 'Head-to-Head Variant Compare'}
               </h4>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                 Compare this design against an alternate variant (face crop vs wide shot, with vs without bold text) to find the higher CTR candidate.
@@ -1025,7 +1027,7 @@ export function AnalysisDashboard({
               className="inline-flex items-center justify-center space-x-2 w-full py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-purple-400 text-slate-800 dark:text-slate-100 font-bold text-xs shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
               <GitCompare className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span>Compare with Variant B</span>
+              <span>{t('Compare with Variant B') || 'Compare with Variant B'}</span>
             </button>
           </div>
         </div>

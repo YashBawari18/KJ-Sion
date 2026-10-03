@@ -16,18 +16,18 @@ export function AttentionScoreCard({ score, signals }: AttentionScoreCardProps) 
   const getScoreGrade = (val: number) => {
     if (val >= 80) {
       return {
-        label: 'Optimal Hierarchy',
+        label: t('Optimal Hierarchy'),
         color: 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800'
       };
     }
     if (val >= 65) {
       return {
-        label: 'Balanced Attention',
+        label: t('Balanced Attention'),
         color: 'text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800'
       };
     }
     return {
-      label: 'Competing Signals',
+      label: t('Competing Signals'),
       color: 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800'
     };
   };

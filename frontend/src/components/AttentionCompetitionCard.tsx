@@ -3,6 +3,7 @@
 import React from 'react';
 import { SignalScores, AttentionJourneyStep } from '@/types/analysis';
 import { Target, Zap, AlertTriangle, Layers, Info } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AttentionCompetitionCardProps {
   signals: SignalScores;
@@ -10,6 +11,7 @@ interface AttentionCompetitionCardProps {
 }
 
 export function AttentionCompetitionCard({ signals, journey }: AttentionCompetitionCardProps) {
+  const { t } = useLanguage();
   // Compute primary, secondary, and distraction dynamically from actual signals & journey
   const primaryStep = journey[0];
   const secondaryStep = journey[1] || { target: 'Secondary Accent', reason: 'Supporting element' };
@@ -47,16 +49,16 @@ export function AttentionCompetitionCard({ signals, journey }: AttentionCompetit
           </div>
           <div>
             <h3 className="font-bold text-slate-900 dark:text-white text-base">
-              Attention Competition & Hierarchy
+              {t('Attention Competition & Hierarchy')}
             </h3>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Primary vs secondary attractors & visual distractors
+              {t('Primary vs secondary attractors & visual distractors')}
             </p>
           </div>
         </div>
 
         <span className="text-[10px] font-semibold uppercase tracking-wider bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 px-2.5 py-1 rounded-full">
-          Signal Weighting
+          {t('Signal Weighting')}
         </span>
       </div>
 

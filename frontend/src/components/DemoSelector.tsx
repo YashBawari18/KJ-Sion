@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { BarChart3, Flame, Type, Smartphone, ArrowRight, Loader2, PlayCircle } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface DemoSelectorProps {
   onSelectYouTube: (youtubeUrl: string) => Promise<void> | void;
@@ -82,6 +83,7 @@ const YT_DEMOS = [
 ];
 
 export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) {
+  const { t } = useLanguage();
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const handleInspect = async (card: typeof YT_DEMOS[number]) => {
@@ -101,19 +103,19 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
         <div>
           <div className="flex items-center space-x-1.5 text-purple-700 dark:text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">
             <BarChart3 className="w-4 h-4" />
-            <span>COMPARATIVE ATTENTION AUDITS</span>
+            <span>{t('COMPARATIVE ATTENTION AUDITS')}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Try Demo Thumbnails
+            {t('Try Demo Thumbnails')}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Real YouTube videos with live attention breakdown. Thumbnails are fetched directly from YouTube CDN.
+            {t('Real YouTube videos with live attention breakdown. Thumbnails are fetched directly from YouTube CDN.')}
           </p>
         </div>
 
         <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-semibold text-slate-700 dark:text-slate-300">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Live YouTube CDN thumbnails</span>
+          <span>{t('Live YouTube CDN thumbnails')}</span>
         </div>
       </div>
 
@@ -144,7 +146,7 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
                     <div className="w-12 h-12 rounded-full border-4 border-purple-200 dark:border-purple-900" />
                     <div className="absolute inset-0 w-12 h-12 rounded-full border-4 border-t-purple-600 dark:border-t-purple-400 animate-spin" />
                   </div>
-                  <p className="text-xs font-bold text-purple-700 dark:text-purple-300 tracking-wide animate-pulse">Analyzing…</p>
+                  <p className="text-xs font-bold text-purple-700 dark:text-purple-300 tracking-wide animate-pulse">{t('Analyzing…') || 'Analyzing…'}</p>
                 </div>
               )}
               <div>
@@ -185,7 +187,7 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
                 {/* Attention Distribution */}
                 <div className="space-y-1.5 mb-4">
                   <div className="flex items-center justify-between text-xs font-semibold">
-                    <span className="text-slate-500 dark:text-slate-400">Attention Distribution</span>
+                    <span className="text-slate-500 dark:text-slate-400">{t('Attention Distribution') || 'Attention Distribution'}</span>
                     <span className="text-slate-900 dark:text-slate-200 font-bold">{card.distText}</span>
                   </div>
                   <div className="h-2 w-full rounded-full overflow-hidden flex bg-slate-100 dark:bg-slate-800">
@@ -197,7 +199,7 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
 
                 {/* Fixation Velocity waveform */}
                 <div className="flex items-center justify-between py-2 border-t border-slate-100 dark:border-slate-800 text-xs">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">Fixation Velocity:</span>
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">{t('Fixation Velocity:') || 'Fixation Velocity:'}</span>
                   <div className="flex items-center space-x-2">
                     <div className="flex items-end space-x-0.5 h-4">
                       {card.waveformHeights.map((h, i) => (
@@ -216,7 +218,7 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
               {/* Footer: CTR Lift + Inspect Button */}
               <div className="pt-3 mt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">PREDICTED CTR LIFT</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{t('PREDICTED CTR LIFT') || 'PREDICTED CTR LIFT'}</p>
                   <p className="text-base font-black text-purple-600 dark:text-purple-400 leading-tight">{card.ctrLift}</p>
                 </div>
 
@@ -234,11 +236,11 @@ export function DemoSelector({ onSelectYouTube, isLoading }: DemoSelectorProps) 
                   {isThisLoading ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Loading…</span>
+                      <span>{t('Loading…') || 'Loading…'}</span>
                     </>
                   ) : (
                     <>
-                      <span>Inspect</span>
+                      <span>{t('Inspect & Analyze →') || 'Inspect'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </>
                   )}

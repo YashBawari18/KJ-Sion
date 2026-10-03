@@ -142,7 +142,7 @@ export default function Home() {
           <div className="mb-6 p-4 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 flex items-start space-x-3 text-xs sm:text-sm shadow-xs backdrop-blur-xs animate-fade-in">
             <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="font-semibold text-amber-950 dark:text-amber-100">Backend Server Offline</p>
+              <p className="font-semibold text-amber-950 dark:text-amber-100">{t('Backend Server Offline')}</p>
               <p className="text-amber-800 dark:text-amber-300 mt-0.5">
                 The Python attention engine is not responding at <code className="bg-amber-100 dark:bg-amber-900/50 px-1 py-0.5 rounded font-mono">http://localhost:8000</code>.
               </p>
@@ -158,7 +158,7 @@ export default function Home() {
               className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-amber-200/70 dark:bg-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-800 text-amber-900 dark:text-amber-100 font-medium text-xs transition-colors shrink-0 cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Retry</span>
+              <span>{t('Retry')}</span>
             </button>
           </div>
         )}
@@ -174,14 +174,14 @@ export default function Home() {
                 <div className="flex items-center space-x-2.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate max-w-sm sm:max-w-md">
-                    Active analysis: {analysisResult.image_metadata.filename} ({analysisResult.attention_score}/100)
+                    {t('Active analysis:') || 'Active analysis:'} {analysisResult.image_metadata.filename} ({analysisResult.attention_score}/100)
                   </span>
                 </div>
                 <button
                   onClick={() => setCurrentPage('results')}
                   className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-xs cursor-pointer shrink-0"
                 >
-                  <span>View Results</span>
+                  <span>{t('View Results')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
