@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Thumbnail IQ - AI-Powered YouTube Thumbnail Attention Heatmap",
   "scripts": {
+    "build": "cd frontend && npm run build",
     "dev": "bash start.sh",
     "setup": "bash setup.sh",
     "frontend": "cd frontend && npm run dev",
