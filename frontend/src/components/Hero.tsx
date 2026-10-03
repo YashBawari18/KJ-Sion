@@ -125,7 +125,7 @@ export function Hero({
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-black tracking-tight text-slate-900 dark:text-white leading-[1.1] transition-all">
             {t('heroTitlePrefix') || 'Where will viewers look'}{' '}
             <span className="bg-gradient-to-r from-purple-600 via-indigo-500 to-pink-500 bg-clip-text text-transparent animate-shimmer inline-block">
-              in the first <span className="font-mono tabular-nums text-purple-600 dark:text-purple-400 underline decoration-purple-400/40 decoration-wavy decoration-2 underline-offset-4">{animated500}</span>ms?
+              in the first <span className="font-mono tabular-nums text-purple-600 dark:text-purple-400">{animated500}</span>ms?
             </span>
           </h1>
 
