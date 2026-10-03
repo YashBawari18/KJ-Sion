@@ -40,10 +40,9 @@ type SampleKey = 'face' | 'product' | 'text';
 const SAMPLES_DATA = {
   face: {
     id: 'face' as SampleKey,
-    label: 'Face & Expression',
+    label: 'Face',
     icon: '😀',
     src: '/samples/sample_face.jpg',
-    badgeText: 'Face Saliency Anchor',
     ctr: '9.8%',
     clarityScore: 94,
     blobs: [
@@ -68,10 +67,9 @@ const SAMPLES_DATA = {
   },
   product: {
     id: 'product' as SampleKey,
-    label: 'Tech & Product',
+    label: 'Product',
     icon: '📦',
     src: '/samples/sample_product.jpg',
-    badgeText: 'Product Focal Point',
     ctr: '11.4%',
     clarityScore: 96,
     blobs: [
@@ -96,10 +94,9 @@ const SAMPLES_DATA = {
   },
   text: {
     id: 'text' as SampleKey,
-    label: 'Bold Typography',
+    label: 'Typography',
     icon: '🔤',
     src: '/samples/sample_text.jpg',
-    badgeText: 'Text Dominance',
     ctr: '10.2%',
     clarityScore: 91,
     blobs: [
@@ -524,129 +521,127 @@ export function Hero({
         </div>
 
         {/* ============================================================== */}
-        {/* RIGHT COLUMN: Enhanced Interactive Showcase Card               */}
+        {/* RIGHT COLUMN: Redesigned High-Tech Showcase Card               */}
         {/* ============================================================== */}
         <div className="lg:col-span-5 relative group">
-          {/* Ambient Glow behind card */}
-          <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/35 via-pink-600/25 to-blue-600/35 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none" />
+          {/* Subtle Ambient Card Glow */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 via-pink-500/15 to-indigo-500/20 rounded-3xl blur-xl opacity-60 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
           {/* Main Card Glass Container */}
-          <div className="relative rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800/90 p-4 sm:p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:shadow-purple-500/10">
+          <div className="relative rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 shadow-xl transition-all duration-300">
             
-            {/* Header: Title + Sample Switcher Tabs */}
-            <div className="space-y-2.5 mb-3.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
-                  </span>
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
-                    <span>Neural Gaze Lens</span>
-                    <span className="px-1.5 py-0.2 rounded-md bg-purple-100 dark:bg-purple-950/80 text-[10px] font-extrabold text-purple-600 dark:text-purple-300">
-                      LIVE AI
-                    </span>
-                  </span>
-                </div>
-
-                {/* View Mode Switcher */}
-                <div className="flex items-center space-x-1 bg-slate-100/90 dark:bg-slate-800/90 p-1 rounded-xl text-[11px] font-bold border border-slate-200/80 dark:border-slate-700/80">
-                  <button
-                    type="button"
-                    onClick={() => setPreviewMode('heatmap')}
-                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                      previewMode === 'heatmap'
-                        ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 shadow-xs font-extrabold'
-                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                    }`}
-                  >
-                    🔥 Heatmap
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPreviewMode('scanpath')}
-                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                      previewMode === 'scanpath'
-                        ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-xs font-extrabold'
-                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                    }`}
-                  >
-                    🎯 Scanpath
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPreviewMode('original')}
-                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                      previewMode === 'original'
-                        ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs font-extrabold'
-                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                    }`}
-                  >
-                    👁️ Raw
-                  </button>
-                </div>
+            {/* 1. Header: Live Title on Left, View Mode Switcher on Right */}
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center space-x-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
+                </span>
+                <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100">
+                  Neural Gaze Lens
+                </span>
+                <span className="px-1.5 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-[10px] font-bold text-purple-700 dark:text-purple-300">
+                  LIVE AI
+                </span>
               </div>
 
-              {/* Sample Selector Pills + Test Toggles */}
-              <div className="flex items-center justify-between gap-1.5 flex-wrap pt-0.5">
-                {/* 3 Sample Thumbnails Selector */}
-                <div className="flex items-center space-x-1 bg-slate-100/70 dark:bg-slate-800/60 p-1 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
-                  {(Object.keys(SAMPLES_DATA) as SampleKey[]).map((key) => {
-                    const sample = SAMPLES_DATA[key];
-                    const isActive = activeSampleKey === key;
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setActiveSampleKey(key)}
-                        className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
-                          isActive
-                            ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-300 shadow-xs ring-1 ring-purple-500/30'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                        }`}
-                      >
-                        <span>{sample.icon}</span>
-                        <span>{sample.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Squint and Mobile Feed buttons */}
-                <div className="flex items-center space-x-1">
-                  <button
-                    type="button"
-                    onClick={() => setIsSquintMode(!isSquintMode)}
-                    className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
-                      isSquintMode
-                        ? 'bg-amber-500 text-white shadow-xs'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                    }`}
-                    title="Simulate peripheral / glance squint test"
-                  >
-                    <EyeOff className="w-3 h-3" />
-                    <span>Squint</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsMobileFeedMode(!isMobileFeedMode)}
-                    className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
-                      isMobileFeedMode
-                        ? 'bg-purple-600 text-white shadow-xs'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                    }`}
-                    title="Simulate YouTube mobile feed card layout"
-                  >
-                    <Smartphone className="w-3 h-3" />
-                    <span>Feed</span>
-                  </button>
-                </div>
+              {/* View Mode Switcher (Heatmap, Scanpath, Raw) */}
+              <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-[11px] font-bold border border-slate-200/60 dark:border-slate-700/60">
+                <button
+                  type="button"
+                  onClick={() => setPreviewMode('heatmap')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    previewMode === 'heatmap'
+                      ? 'bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 shadow-xs font-extrabold'
+                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  }`}
+                >
+                  🔥 Heatmap
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewMode('scanpath')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    previewMode === 'scanpath'
+                      ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-xs font-extrabold'
+                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  }`}
+                >
+                  🎯 Scanpath
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPreviewMode('original')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    previewMode === 'original'
+                      ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs font-extrabold'
+                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                  }`}
+                >
+                  👁️ Raw
+                </button>
               </div>
             </div>
 
-            {/* Thumbnail Canvas Frame */}
+            {/* 2. Sub-Toolbar: Sample Tabs Left, Squint & Feed Tools Right */}
+            <div className="flex items-center justify-between gap-2 mb-3">
+              {/* Sample Segmented Control */}
+              <div className="flex items-center space-x-1 bg-slate-100/90 dark:bg-slate-800/90 p-0.5 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
+                {(Object.keys(SAMPLES_DATA) as SampleKey[]).map((key) => {
+                  const sample = SAMPLES_DATA[key];
+                  const isActive = activeSampleKey === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setActiveSampleKey(key)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+                        isActive
+                          ? 'bg-white dark:bg-slate-900 text-purple-700 dark:text-purple-300 shadow-xs ring-1 ring-purple-500/20'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                      }`}
+                    >
+                      <span>{sample.icon}</span>
+                      <span>{sample.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Squint and Mobile Feed Toggle Buttons */}
+              <div className="flex items-center space-x-1">
+                <button
+                  type="button"
+                  onClick={() => setIsSquintMode(!isSquintMode)}
+                  className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+                    isSquintMode
+                      ? 'bg-amber-500 text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  }`}
+                  title="Simulate peripheral / glance squint test"
+                >
+                  <EyeOff className="w-3 h-3" />
+                  <span>Squint</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileFeedMode(!isMobileFeedMode)}
+                  className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+                    isMobileFeedMode
+                      ? 'bg-purple-600 text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  }`}
+                  title="Simulate YouTube mobile feed card layout"
+                >
+                  <Smartphone className="w-3 h-3" />
+                  <span>Feed</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 3. Thumbnail Canvas Frame */}
             <div className={`relative aspect-video rounded-2xl overflow-hidden border border-slate-200/90 dark:border-slate-800 bg-slate-950 shadow-inner transition-all duration-300 ${
-              isMobileFeedMode ? 'ring-4 ring-purple-500/30 max-w-[94%] mx-auto' : ''
+              isMobileFeedMode ? 'ring-4 ring-purple-500/30 max-w-[95%] mx-auto' : ''
             }`}>
               {/* Main Image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -814,27 +809,20 @@ export function Hero({
               </div>
             </div>
 
-            {/* Bottom Card Analytics HUD Footer */}
+            {/* 4. Bottom Card Analytics HUD Footer */}
             <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-              <div className="flex items-center space-x-3">
-                <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-300 font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Clarity Score:</span>
-                  <span className="font-mono font-black text-purple-600 dark:text-purple-400">{activeSample.clarityScore}/100</span>
-                </div>
+              <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-300 font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Clarity Score:</span>
+                <span className="font-mono font-black text-purple-600 dark:text-purple-400">{activeSample.clarityScore}/100</span>
               </div>
 
-              <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px] bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg border border-emerald-200/80 dark:border-emerald-900/60">
+              <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-extrabold text-[11px] bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg border border-emerald-200/80 dark:border-emerald-900/60">
                 <TrendingUp className="w-3.5 h-3.5" />
-                <span>+24.3% CTR Lift vs Avg</span>
+                <span>+24.3% CTR Lift</span>
               </div>
             </div>
 
-            {/* Floating Glass Highlight Badge */}
-            <div className="absolute -bottom-3.5 right-4 sm:right-6 px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-purple-300/80 dark:border-purple-700/80 shadow-2xl flex items-center space-x-1.5 text-[11px] font-bold text-purple-700 dark:text-purple-300 animate-float-badge z-30">
-              <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 animate-spin" />
-              <span>{activeSample.badgeText}</span>
-            </div>
           </div>
         </div>
 
